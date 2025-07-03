@@ -2,7 +2,7 @@
 
 Merhaba! Bu, Aslı Aydın'ın kişisel portföy web sitesidir. Bu proje, profesyonel becerilerimi, projelerimi ve iletişim bilgilerimi sergilemek için oluşturulmuş bir React tabanlı web uygulamasıdır. Modern ve kullanıcı dostu bir arayüzle tasarlanmıştır ve EmailJS entegrasyonu ile iletişim formu içerir.
 
-🌐 **[Canlı Siteyi Görüntüle](https://kisisel-portfolyo.netlify.app)**
+🌐 **[Canlı Siteyi Görüntüle](https://asliaydin.netlify.app/)**
 
 ## 📖 Proje Hakkında
 Bu portföy sitesi, yazılım geliştirme alanındaki deneyimlerimi ve projelerimi tanıtmak için geliştirilmiştir. Aşağıdaki özelliklere sahiptir:
