@@ -154,7 +154,7 @@ const experiences = [
     company_name: "Yapay Zeka ve Teknoloji Akademisi",
     icon: shopify,
     iconBg: "#383E56",
-    date: "Jan 2022 - Jan 2023",
+    date: "2024 - Devam Ediyor",
     points: [
       "Yapay zekâ, makine öğrenimi ve veri bilimine olan ilgim doğrultusunda Yapay Zekâ ve Teknoloji Akademisi'ne katıldım. Bu kapsamda:",
       "Teknik ve girişimcilik odaklı çok yönlü bir eğitim aldım.",
@@ -167,7 +167,7 @@ const experiences = [
     company_name: "Bootcamp, Hackathon ve Proje Yarışmaları",
     icon: meta,
     iconBg: "#E6DEDD",
-    date: "Jan 2023 - Present",
+    date: "2024 - Devam Ediyor",
     points: [
       "Jam Etkinlikleri: Belirli süre içinde ürün geliştirme odaklı yarışmalarda ekipler halinde çalışarak proje yönetimi ve hızlı geliştirme yeteneklerimi test ettim.",
       "Hackathonlar: Sosyal etki temalı projeler geliştirdim. Eğitimde yapay zeka kullanımı gibi konular üzerine yoğunlaştım.",
@@ -182,15 +182,15 @@ const testimonials = [
       "Portfolyo sitesini incelerken hem yazılım becerilerini hem de tasarımsal yönünü bir arada görebiliyorsunuz.",
     name: "Büşra Aydın",
     designation: "Diş Hekimi",
-    company: "Acme Co",
+    company: "Aydın Diş Kliniği",
     image: "https://randomuser.me/api/portraits/women/4.jpg",
   },
   {
     testimonial:
       "Aslı gibi müşterilerinin başarısını gerçekten önemseyen bir web geliştiricisiyle hiç tanışmadım..",
     name: "Arif Aydın",
-    designation: "COO",
-    company: "DEF Corp",
+    designation: "CEO",
+    company: "Aydın İnşaat",
     image: "https://randomuser.me/api/portraits/men/5.jpg",
   },
   {
@@ -198,7 +198,7 @@ const testimonials = [
       "Verdiğimiz e-ticaret sitesi projesini hem zamanında hem de beklediğimizden daha iyi bir şekilde teslim etti. Her zaman iletişime açık ve çözüm odaklı.",
     name: "Lisa Wang",
     designation: "CTO",
-    company: "456 Enterprises",
+    company: "Tech Innovations",
     image: "https://randomuser.me/api/portraits/women/6.jpg",
   },
 ];
