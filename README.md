@@ -4,7 +4,7 @@ Merhaba! Bu, Aslı Aydın'ın kişisel portföy web sitesidir. Bu proje, profesy
 
 🌐 **[Canlı Siteyi Görüntüle](https://asliaydin.netlify.app/)**
 
-<img src="site.png" alt="Uygulama Görseli" width="500"/>
+<img src="public/site.png" alt="Uygulama Görseli" width="500"/>
 
 ## 📖 Proje Hakkında
 Bu portföy sitesi, yazılım geliştirme alanındaki deneyimlerimi ve projelerimi tanıtmak için geliştirilmiştir. Aşağıdaki özelliklere sahiptir:
