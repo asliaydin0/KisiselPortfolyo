@@ -23,3 +23,14 @@ Projeyi yerel makinenizde çalıştırmak için aşağıdaki adımları izleyin:
    ```bash
    git clone https://github.com/asliaydin0/KisiselPortfolyo.git
    cd KisiselPortfolyo
+
+2. Gerekli bağımlılıkları yükleyin:
+   ```bash
+   npm install
+
+3. Geliştirme sunucusunu başlatın:
+   ```bash
+   npm start
+
+4. Tarayıcınızda projeyi görüntüleyin.
+   
