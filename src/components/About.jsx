@@ -45,11 +45,12 @@ const About = () => {
         </div>
         
         <a
-          href="/assets/CV_AsliAydin.pdf"
-          download
+          href="/public/CV_AsliAydin.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
           className="bg-[#915EFF] hover:bg-[#7b4de5] text-white px-6 py-3 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105"
         >
-          CV'yi İndir
+          CV'yi Görüntüle
         </a>
       </motion.div>
 
