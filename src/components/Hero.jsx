@@ -1,15 +1,18 @@
 import { motion } from "framer-motion";
 import { styles } from "../styles";
 import { ComputersCanvas } from "./canvas";
-import profilePic from "../assets/profile-pic.jpg";
+import { useSiteSettings, renderHeroTitle } from "../context/SiteSettingsContext";
 
 const Hero = () => {
+  const { settings } = useSiteSettings();
+  const { prefix, highlight } = renderHeroTitle(settings.hero_title);
+  const subtitleLines = (settings.hero_subtitle || "").split("\n");
+
   return (
     <section className="relative w-full h-screen mx-auto">
       <div
         className={`absolute inset-0 top-[120px] max-w-7xl mx-auto ${styles.paddingX} flex flex-row justify-between items-start gap-5`}
       >
-        {/* Sol taraf (metin ve çizgi) */}
         <div className="flex flex-row gap-5">
           <div className="flex flex-col justify-center items-center mt-5">
             <div className="w-5 h-5 rounded-full bg-[#915EFF]" />
@@ -18,31 +21,39 @@ const Hero = () => {
 
           <div>
             <h1 className={`${styles.heroHeadText} text-white`}>
-              Merhaba, Ben <span className="text-[#915EFF]">Aslı</span>
+              {prefix}
+              {highlight && <span className="text-[#915EFF]">{highlight}</span>}
             </h1>
             <p className={`${styles.heroSubText} mt-2 text-white-100`}>
-              Bilgisayar Teknolojisi ve Bilişim Sistemleri öğrencisiyim.
-              <br className="sm:block hidden" />
-              Yazılım geliştirme ve yaratıcı projeler üretme tutkusu ile yol alıyorum.
+              {subtitleLines.map((line, index) => (
+                <span key={index}>
+                  {index > 0 && <br className="sm:block hidden" />}
+                  {line}
+                </span>
+              ))}
             </p>
           </div>
         </div>
 
-        {/* Sağ taraf (fotoğraf) */}
         <motion.div
           whileHover={{ scale: 1.05, rotate: 5 }}
           transition={{ type: "spring", stiffness: 300 }}
           className="mt-10 sm:mt-0 mr-0"
         >
-          <img
-            src={profilePic}
-            alt="Profil Fotoğrafı"
-            className="w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover border-4 border-[#915EFF] shadow-lg transition-all duration-300 hover:brightness-110"
-          />
+          {settings.profile_img_url ? (
+            <img
+              src={settings.profile_img_url}
+              alt="Profil Fotoğrafı"
+              className="w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover border-4 border-[#915EFF] shadow-lg transition-all duration-300 hover:brightness-110"
+            />
+          ) : (
+            <div className="w-32 h-32 sm:w-48 sm:h-48 rounded-full border-4 border-[#915EFF] shadow-lg bg-tertiary flex items-center justify-center">
+              <span className="text-4xl sm:text-6xl opacity-40">👤</span>
+            </div>
+          )}
         </motion.div>
       </div>
 
-      {/* Aşağı ok */}
       <div className="absolute xs:bottom-1 bottom-10 w-full flex justify-center items-center z-10">
         <a href="#about">
           <div className="w-[35px] h-[64px] rounded-3xl border-4 border-secondary flex justify-center items-start p-2">
@@ -61,7 +72,6 @@ const Hero = () => {
         </a>
       </div>
 
-      {/* 3D canvas */}
       <ComputersCanvas />
     </section>
   );

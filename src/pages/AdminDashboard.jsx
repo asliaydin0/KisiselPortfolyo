@@ -5,9 +5,11 @@ import { supabase } from '../config/supabaseClient';
 import AdminProjects from './admin/AdminProjects';
 import AdminExperiences from './admin/AdminExperiences';
 import AdminSkills from './admin/AdminSkills';
+import AdminSettings from './admin/AdminSettings';
 
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Panel Özeti', icon: '📊' },
+  { id: 'settings', label: 'Genel Ayarlar', icon: '⚙️' },
   { id: 'projects', label: 'Projeleri Yönet', icon: '📁' },
   { id: 'experience', label: 'Deneyimleri Yönet', icon: '💼' },
   { id: 'skills', label: 'Yetenekleri Yönet', icon: '🛠' },
@@ -17,6 +19,10 @@ const TAB_META = {
   dashboard: {
     title: 'Panel Özeti',
     subtitle: 'Hoş geldiniz! Portföyünüzün genel durumunu buradan izleyebilirsiniz.',
+  },
+  settings: {
+    title: 'Genel Ayarlar',
+    subtitle: 'Logo, profil fotoğrafı ve hero metinlerini yönetin.',
   },
   projects: {
     title: 'Projeler',
@@ -84,6 +90,8 @@ const AdminDashboard = () => {
 
   const renderContent = () => {
     switch (activeTab) {
+      case 'settings':
+        return <AdminSettings />;
       case 'projects':
         return <AdminProjects />;
       case 'experience':
