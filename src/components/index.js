@@ -8,7 +8,7 @@ import Works from "./Works";
 import Feedbacks from "./Feedbacks";
 import Contact from "./Contact";
 import CanvasLoader from "./Loader";
-
+import ProtectedRoute from "./ProtectedRoute";
 
 export {
   Hero,
@@ -23,5 +23,6 @@ export {
   EarthCanvas, 
   BallCanvas, 
   ComputersCanvas, 
-  StarsCanvas
+  StarsCanvas,
+  ProtectedRoute
 };
