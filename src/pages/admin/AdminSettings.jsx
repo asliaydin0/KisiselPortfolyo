@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import toast from "react-hot-toast";
 import { FiUpload, FiSave } from "react-icons/fi";
 import { supabase } from "../../config/supabaseClient";
 import { SETTINGS_ID } from "../../context/SiteSettingsContext";
+import ImageCropperModal from "../../components/admin/ImageCropperModal";
+import { validateImageFile } from "../../utils/cropImage";
 import {
   adminInputClass,
   adminLabelClass,
@@ -12,32 +14,21 @@ import {
 } from "../../utils/adminStyles";
 
 const BUCKET = "profile-assets";
+const SQUARE_ASPECT = 1;
 
 const uploadAsset = async (file, folder) => {
-  const ext = file.name.split(".").pop();
+  const ext = "jpg";
   const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
   const filePath = `${folder}/${fileName}`;
 
   const { error } = await supabase.storage
     .from(BUCKET)
-    .upload(filePath, file, { cacheControl: "3600", upsert: false });
+    .upload(filePath, file, { cacheControl: "3600", upsert: false, contentType: file.type });
 
   if (error) throw error;
 
   const { data } = supabase.storage.from(BUCKET).getPublicUrl(filePath);
   return data.publicUrl;
-};
-
-const validateImage = (file) => {
-  if (!file.type.startsWith("image/")) {
-    toast.error("Lütfen geçerli bir görsel dosyası seçin.");
-    return false;
-  }
-  if (file.size > 5 * 1024 * 1024) {
-    toast.error("Dosya boyutu 5 MB'dan küçük olmalıdır.");
-    return false;
-  }
-  return true;
 };
 
 const AdminSettings = () => {
@@ -49,12 +40,24 @@ const AdminSettings = () => {
     logo_url: "",
     profile_img_url: "",
   });
-  const [logoFile, setLogoFile] = useState(null);
-  const [profileFile, setProfileFile] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
+  const [cropModal, setCropModal] = useState({
+    open: false,
+    imageSrc: null,
+    type: null,
+  });
   const logoInputRef = useRef(null);
   const profileInputRef = useRef(null);
+
+  const closeCropModal = useCallback(() => {
+    setCropModal((prev) => {
+      if (prev.imageSrc) URL.revokeObjectURL(prev.imageSrc);
+      return { open: false, imageSrc: null, type: null };
+    });
+    logoInputRef.current && (logoInputRef.current.value = "");
+    profileInputRef.current && (profileInputRef.current.value = "");
+  }, []);
 
   const fetchSettings = async () => {
     setLoading(true);
@@ -91,18 +94,39 @@ const AdminSettings = () => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const openCropModal = (file, type) => {
+    const errorMsg = validateImageFile(file);
+    if (errorMsg) {
+      toast.error(errorMsg);
+      return;
+    }
+
+    const imageSrc = URL.createObjectURL(file);
+    setCropModal({ open: true, imageSrc, type });
+  };
+
   const handleLogoSelect = (e) => {
     const file = e.target.files?.[0];
-    if (!file || !validateImage(file)) return;
-    setLogoFile(file);
-    setLogoPreview(URL.createObjectURL(file));
+    if (file) openCropModal(file, "logo");
   };
 
   const handleProfileSelect = (e) => {
     const file = e.target.files?.[0];
-    if (!file || !validateImage(file)) return;
-    setProfileFile(file);
-    setProfilePreview(URL.createObjectURL(file));
+    if (file) openCropModal(file, "profile");
+  };
+
+  const handleCropComplete = async (file) => {
+    const folder = cropModal.type === "logo" ? "logo" : "profile";
+
+    const url = await uploadAsset(file, folder);
+
+    if (cropModal.type === "logo") {
+      setLogoPreview(url);
+      setForm((prev) => ({ ...prev, logo_url: url }));
+    } else {
+      setProfilePreview(url);
+      setForm((prev) => ({ ...prev, profile_img_url: url }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -117,21 +141,11 @@ const AdminSettings = () => {
     const toastId = toast.loading("Ayarlar kaydediliyor...");
 
     try {
-      let logoUrl = form.logo_url || null;
-      let profileUrl = form.profile_img_url || null;
-
-      if (logoFile) {
-        logoUrl = await uploadAsset(logoFile, "logo");
-      }
-      if (profileFile) {
-        profileUrl = await uploadAsset(profileFile, "profile");
-      }
-
       const payload = {
         hero_title: form.hero_title.trim(),
         hero_subtitle: form.hero_subtitle.trim() || null,
-        logo_url: logoUrl,
-        profile_img_url: profileUrl,
+        logo_url: form.logo_url || null,
+        profile_img_url: form.profile_img_url || null,
       };
 
       const { error } = await supabase
@@ -140,14 +154,6 @@ const AdminSettings = () => {
         .eq("id", SETTINGS_ID);
 
       if (error) throw error;
-
-      setForm((prev) => ({
-        ...prev,
-        logo_url: logoUrl || "",
-        profile_img_url: profileUrl || "",
-      }));
-      setLogoFile(null);
-      setProfileFile(null);
 
       toast.success("Genel ayarlar kaydedildi.", { id: toastId });
     } catch (err) {
@@ -177,14 +183,14 @@ const AdminSettings = () => {
       <form onSubmit={handleSubmit} className={`${adminCardClass} space-y-6`}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className={adminLabelClass}>Logo</label>
+            <label className={adminLabelClass}>Logo (1:1)</label>
             <div className="flex flex-col gap-3">
               <button
                 type="button"
                 onClick={() => logoInputRef.current?.click()}
                 className={`${adminBtnSecondary} flex items-center gap-2 w-fit`}
               >
-                <FiUpload /> Logo Seç
+                <FiUpload /> Logo Seç ve Kırp
               </button>
               <input
                 ref={logoInputRef}
@@ -204,14 +210,14 @@ const AdminSettings = () => {
           </div>
 
           <div>
-            <label className={adminLabelClass}>Profil Fotoğrafı</label>
+            <label className={adminLabelClass}>Profil Fotoğrafı (1:1)</label>
             <div className="flex flex-col gap-3">
               <button
                 type="button"
                 onClick={() => profileInputRef.current?.click()}
                 className={`${adminBtnSecondary} flex items-center gap-2 w-fit`}
               >
-                <FiUpload /> Fotoğraf Seç
+                <FiUpload /> Fotoğraf Seç ve Kırp
               </button>
               <input
                 ref={profileInputRef}
@@ -274,6 +280,15 @@ const AdminSettings = () => {
           )}
         </button>
       </form>
+
+      <ImageCropperModal
+        open={cropModal.open}
+        imageSrc={cropModal.imageSrc}
+        aspect={SQUARE_ASPECT}
+        title={cropModal.type === "logo" ? "Logoyu Kırp" : "Profil Fotoğrafını Kırp"}
+        onClose={closeCropModal}
+        onCropComplete={handleCropComplete}
+      />
     </div>
   );
 };

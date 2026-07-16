@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import toast from "react-hot-toast";
 import { FiEdit2, FiTrash2, FiPlus, FiUpload, FiExternalLink } from "react-icons/fi";
 import { supabase } from "../../config/supabaseClient";
 import ConfirmDialog from "../../components/admin/ConfirmDialog";
+import ImageCropperModal from "../../components/admin/ImageCropperModal";
+import { validateImageFile } from "../../utils/cropImage";
 import {
   adminInputClass,
   adminLabelClass,
@@ -13,6 +15,7 @@ import {
 } from "../../utils/adminStyles";
 
 const BUCKET = "project-images";
+const COVER_ASPECT = 16 / 9;
 
 const emptyForm = {
   baslik: "",
@@ -30,11 +33,19 @@ const AdminProjects = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(emptyForm);
-  const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [cropModal, setCropModal] = useState({ open: false, imageSrc: null });
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const fileInputRef = useRef(null);
+
+  const closeCropModal = useCallback(() => {
+    setCropModal((prev) => {
+      if (prev.imageSrc) URL.revokeObjectURL(prev.imageSrc);
+      return { open: false, imageSrc: null };
+    });
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }, []);
 
   const fetchProjects = async () => {
     setLoading(true);
@@ -58,10 +69,9 @@ const AdminProjects = () => {
   const resetForm = () => {
     setForm(emptyForm);
     setEditingId(null);
-    setImageFile(null);
     setImagePreview(null);
     setShowForm(false);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+    closeCropModal();
   };
 
   const openCreateForm = () => {
@@ -80,7 +90,6 @@ const AdminProjects = () => {
       image_url: project.image_url || "",
     });
     setImagePreview(project.image_url || null);
-    setImageFile(null);
     setShowForm(true);
   };
 
@@ -93,34 +102,34 @@ const AdminProjects = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      toast.error("Lütfen geçerli bir görsel dosyası seçin.");
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Dosya boyutu 5 MB'dan küçük olmalıdır.");
+    const errorMsg = validateImageFile(file);
+    if (errorMsg) {
+      toast.error(errorMsg);
       return;
     }
 
-    setImageFile(file);
-    setImagePreview(URL.createObjectURL(file));
+    const imageSrc = URL.createObjectURL(file);
+    setCropModal({ open: true, imageSrc });
   };
 
-  const uploadImage = async () => {
-    if (!imageFile) return form.image_url || null;
-
-    const ext = imageFile.name.split(".").pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+  const uploadCoverImage = async (file) => {
+    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
     const filePath = `covers/${fileName}`;
 
     const { error: uploadError } = await supabase.storage
       .from(BUCKET)
-      .upload(filePath, imageFile, { cacheControl: "3600", upsert: false });
+      .upload(filePath, file, { cacheControl: "3600", upsert: false, contentType: file.type });
 
     if (uploadError) throw uploadError;
 
     const { data } = supabase.storage.from(BUCKET).getPublicUrl(filePath);
     return data.publicUrl;
+  };
+
+  const handleCropComplete = async (file) => {
+    const url = await uploadCoverImage(file);
+    setImagePreview(url);
+    setForm((prev) => ({ ...prev, image_url: url }));
   };
 
   const handleSubmit = async (e) => {
@@ -135,7 +144,6 @@ const AdminProjects = () => {
     const toastId = toast.loading(editingId ? "Proje güncelleniyor..." : "Proje ekleniyor...");
 
     try {
-      const imageUrl = await uploadImage();
       const payload = {
         baslik: form.baslik.trim(),
         aciklama: form.aciklama.trim(),
@@ -145,7 +153,7 @@ const AdminProjects = () => {
           .filter(Boolean),
         github_url: form.github_url.trim() || null,
         live_url: form.live_url.trim() || null,
-        image_url: imageUrl,
+        image_url: form.image_url || null,
       };
 
       if (editingId) {
@@ -283,14 +291,14 @@ const AdminProjects = () => {
             </div>
 
             <div className="md:col-span-2">
-              <label className={adminLabelClass}>Kapak Fotoğrafı</label>
+              <label className={adminLabelClass}>Kapak Fotoğrafı (16:9)</label>
               <div className="flex flex-col sm:flex-row gap-4 items-start">
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   className={`${adminBtnSecondary} flex items-center gap-2`}
                 >
-                  <FiUpload /> Görsel Seç
+                  <FiUpload /> Görsel Seç ve Kırp
                 </button>
                 <input
                   ref={fileInputRef}
@@ -303,7 +311,7 @@ const AdminProjects = () => {
                   <img
                     src={imagePreview}
                     alt="Önizleme"
-                    className="w-32 h-24 object-cover rounded-xl border border-white/10"
+                    className="w-40 h-[90px] object-cover rounded-xl border border-white/10"
                   />
                 )}
               </div>
@@ -425,6 +433,15 @@ const AdminProjects = () => {
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)}
         loading={deleting}
+      />
+
+      <ImageCropperModal
+        open={cropModal.open}
+        imageSrc={cropModal.imageSrc}
+        aspect={COVER_ASPECT}
+        title="Kapak Fotoğrafını Kırp"
+        onClose={closeCropModal}
+        onCropComplete={handleCropComplete}
       />
     </div>
   );
