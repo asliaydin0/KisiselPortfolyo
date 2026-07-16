@@ -4,6 +4,8 @@ Merhaba! Bu, Aslı Aydın'ın kişisel portföy web sitesidir. Bu proje, profesy
 
 🌐 **[Canlı Siteyi Görüntüle](https://asliaydin.netlify.app/)**
 
+<img src="public/site.png" alt="Uygulama Görseli" />
+
 ## 📖 Proje Hakkında
 Bu portföy sitesi, yazılım geliştirme alanındaki deneyimlerimi ve projelerimi tanıtmak için geliştirilmiştir. Aşağıdaki özelliklere sahiptir:
 - **Hakkımda**: Becerilerim, deneyimim ve ilgi alanlarım hakkında bilgiler.
@@ -21,3 +23,14 @@ Projeyi yerel makinenizde çalıştırmak için aşağıdaki adımları izleyin:
    ```bash
    git clone https://github.com/asliaydin0/KisiselPortfolyo.git
    cd KisiselPortfolyo
+
+2. Gerekli bağımlılıkları yükleyin:
+   ```bash
+   npm install
+
+3. Geliştirme sunucusunu başlatın:
+   ```bash
+   npm start
+
+4. Tarayıcınızda projeyi görüntüleyin.
+   
