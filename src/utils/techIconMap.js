@@ -1,0 +1,56 @@
+import {
+  css,
+  docker,
+  figma,
+  git,
+  html,
+  javascript,
+  mongodb,
+  nodejs,
+  reactjs,
+  redux,
+  tailwind,
+  typescript,
+  threejs,
+} from "../assets";
+
+const ICON_MAP = {
+  html: html,
+  "html 5": html,
+  css: css,
+  "css 3": css,
+  javascript: javascript,
+  js: javascript,
+  typescript: typescript,
+  ts: typescript,
+  react: reactjs,
+  "react js": reactjs,
+  reactjs: reactjs,
+  redux: redux,
+  "redux toolkit": redux,
+  tailwind: tailwind,
+  "tailwind css": tailwind,
+  node: nodejs,
+  "node js": nodejs,
+  nodejs: nodejs,
+  mongodb: mongodb,
+  mongo: mongodb,
+  three: threejs,
+  "three js": threejs,
+  threejs: threejs,
+  git: git,
+  figma: figma,
+  docker: docker,
+  python: javascript,
+  flask: javascript,
+  fastapi: javascript,
+  bootstrap: css,
+  tkinter: javascript,
+  json: javascript,
+  ai: javascript,
+};
+
+export const getSkillIcon = (skillName) => {
+  const key = skillName?.trim().toLowerCase();
+  return ICON_MAP[key] || javascript;
+};
