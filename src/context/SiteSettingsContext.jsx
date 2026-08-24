@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "../config/supabaseClient";
+import { formatSupabaseError, assertSupabaseClient } from "../utils/supabaseHelpers";
 
 export const SETTINGS_ID = 1;
 
@@ -29,7 +29,8 @@ export const SiteSettingsProvider = ({ children }) => {
     setError(null);
 
     try {
-      const { data, error: fetchError } = await supabase
+      const client = assertSupabaseClient();
+      const { data, error: fetchError } = await client
         .from("site_settings")
         .select("*")
         .eq("id", SETTINGS_ID)
@@ -44,7 +45,7 @@ export const SiteSettingsProvider = ({ children }) => {
       });
     } catch (err) {
       console.error("Site ayarları yüklenirken hata:", err);
-      setError(err.message || "Site ayarları yüklenemedi.");
+      setError(formatSupabaseError(err));
       setSettings(DEFAULT_SITE_SETTINGS);
     } finally {
       setLoading(false);

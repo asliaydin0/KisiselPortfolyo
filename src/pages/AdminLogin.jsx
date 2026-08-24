@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../config/supabaseClient';
+import { supabase, isSupabaseConfigured } from '../config/supabaseClient';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -11,6 +11,8 @@ const AdminLogin = () => {
 
   // Redirect if already logged in
   useEffect(() => {
+    if (!isSupabaseConfigured || !supabase) return;
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         navigate('/admin', { replace: true });
@@ -24,6 +26,11 @@ const AdminLogin = () => {
     setLoading(true);
 
     try {
+      if (!isSupabaseConfigured || !supabase) {
+        setError('Supabase yapılandırması eksik. .env dosyasını kontrol edip sunucuyu yeniden başlatın.');
+        return;
+      }
+
       const { data, error: loginError } = await supabase.auth.signInWithPassword({
         email,
         password,

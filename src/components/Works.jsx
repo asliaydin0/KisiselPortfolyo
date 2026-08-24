@@ -7,7 +7,10 @@ import { github } from "../assets";
 import { SectionWrapper } from "../hoc";
 import { fadeIn, textVariant } from "../utils/motion";
 import { supabase } from "../config/supabaseClient";
+import { formatSupabaseError, assertSupabaseClient } from "../utils/supabaseHelpers";
 import SectionLoader from "./SectionLoader";
+import DataFetchError from "./DataFetchError";
+import { projects as fallbackProjects } from "../constants";
 
 const TAG_COLORS = ["blue-text-gradient", "green-text-gradient", "pink-text-gradient"];
 
@@ -96,29 +99,42 @@ const Works = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const fetchProjects = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const client = assertSupabaseClient();
+      const { data, error: fetchError } = await client
+        .from("projects")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (fetchError) throw fetchError;
+
+      setProjects((data || []).map(mapProject));
+    } catch (err) {
+      console.error("Projeler yüklenirken hata:", err);
+      setError(formatSupabaseError(err));
+      setProjects(
+        fallbackProjects.map((project, index) => ({
+          ...mapProject({
+            id: `fallback-${index}`,
+            baslik: project.name,
+            aciklama: project.description,
+            teknolojiler: project.tags.map((t) => t.name),
+            github_url: project.source_code_link,
+            live_url: null,
+            image_url: project.image,
+          }),
+        }))
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchProjects = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const { data, error: fetchError } = await supabase
-          .from("projects")
-          .select("*")
-          .order("created_at", { ascending: false });
-
-        if (fetchError) throw fetchError;
-
-        setProjects((data || []).map(mapProject));
-      } catch (err) {
-        console.error("Projeler yüklenirken hata:", err);
-        setError(err.message || "Projeler yüklenemedi.");
-        setProjects([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchProjects();
   }, []);
 
@@ -144,20 +160,23 @@ const Works = () => {
 
       {loading ? (
         <SectionLoader label="Projeler yükleniyor..." />
-      ) : error ? (
-        <div className='mt-20 p-6 rounded-2xl bg-red-500/10 border border-red-500/20 text-center'>
-          <p className='text-red-200 text-sm'>{error}</p>
-        </div>
-      ) : projects.length === 0 ? (
-        <div className='mt-20 p-6 rounded-2xl bg-white/5 border border-white/10 text-center'>
-          <p className='text-secondary text-sm'>Henüz proje eklenmemiş.</p>
-        </div>
       ) : (
-        <div className='mt-20 flex flex-wrap gap-7'>
-          {projects.map((project, index) => (
-            <ProjectCard key={project.id} index={index} {...project} />
-          ))}
-        </div>
+        <>
+          {error && <DataFetchError message={error} onRetry={fetchProjects} />}
+          {projects.length > 0 ? (
+            <div className={`${error ? "mt-8" : "mt-20"} flex flex-wrap gap-7`}>
+              {projects.map((project, index) => (
+                <ProjectCard key={project.id} index={index} {...project} />
+              ))}
+            </div>
+          ) : (
+            !error && (
+              <div className="mt-20 p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
+                <p className="text-secondary text-sm">Henüz proje eklenmemiş.</p>
+              </div>
+            )
+          )}
+        </>
       )}
     </>
   );

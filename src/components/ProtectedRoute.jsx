@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { supabase } from '../config/supabaseClient';
+import { supabase, isSupabaseConfigured } from '../config/supabaseClient';
 
 const ProtectedRoute = ({ children }) => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Get initial session
+    if (!isSupabaseConfigured || !supabase) {
+      setLoading(false);
+      return;
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setLoading(false);

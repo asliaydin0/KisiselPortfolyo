@@ -12,7 +12,10 @@ import { starbucks, tesla, shopify, meta } from "../assets";
 import { SectionWrapper } from "../hoc";
 import { textVariant } from "../utils/motion";
 import { supabase } from "../config/supabaseClient";
+import { formatSupabaseError, assertSupabaseClient } from "../utils/supabaseHelpers";
 import SectionLoader from "./SectionLoader";
+import DataFetchError from "./DataFetchError";
+import { experiences as fallbackExperiences } from "../constants";
 
 const COMPANY_ICONS = [starbucks, tesla, shopify, meta];
 const ICON_BGS = ["#383E56", "#E6DEDD", "#383E56", "#E6DEDD"];
@@ -96,29 +99,35 @@ const Experience = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const fetchExperiences = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const client = assertSupabaseClient();
+      const { data, error: fetchError } = await client
+        .from("experiences")
+        .select("*")
+        .order("baslangic_tarihi", { ascending: false, nullsFirst: false });
+
+      if (fetchError) throw fetchError;
+
+      setExperiences((data || []).map(mapExperience));
+    } catch (err) {
+      console.error("Deneyimler yüklenirken hata:", err);
+      setError(formatSupabaseError(err));
+      setExperiences(
+        fallbackExperiences.map((exp, index) => ({
+          ...exp,
+          id: `fallback-${index}`,
+        }))
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchExperiences = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const { data, error: fetchError } = await supabase
-          .from("experiences")
-          .select("*")
-          .order("baslangic_tarihi", { ascending: false });
-
-        if (fetchError) throw fetchError;
-
-        setExperiences((data || []).map(mapExperience));
-      } catch (err) {
-        console.error("Deneyimler yüklenirken hata:", err);
-        setError(err.message || "Deneyimler yüklenemedi.");
-        setExperiences([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchExperiences();
   }, []);
 
@@ -135,25 +144,30 @@ const Experience = () => {
 
       {loading ? (
         <SectionLoader label="Deneyimler yükleniyor..." />
-      ) : error ? (
-        <div className='mt-20 p-6 rounded-2xl bg-red-500/10 border border-red-500/20 text-center'>
-          <p className='text-red-200 text-sm'>{error}</p>
-        </div>
-      ) : experiences.length === 0 ? (
-        <div className='mt-20 p-6 rounded-2xl bg-white/5 border border-white/10 text-center'>
-          <p className='text-secondary text-sm'>Henüz deneyim eklenmemiş.</p>
-        </div>
       ) : (
-        <div className='mt-20 flex flex-col'>
-          <VerticalTimeline>
-            {experiences.map((experience) => (
-              <ExperienceCard
-                key={experience.id}
-                experience={experience}
-              />
-            ))}
-          </VerticalTimeline>
-        </div>
+        <>
+          {error && (
+            <DataFetchError message={error} onRetry={fetchExperiences} />
+          )}
+          {experiences.length > 0 ? (
+            <div className={`${error ? "mt-8" : "mt-20"} flex flex-col`}>
+              <VerticalTimeline>
+                {experiences.map((experience) => (
+                  <ExperienceCard
+                    key={experience.id}
+                    experience={experience}
+                  />
+                ))}
+              </VerticalTimeline>
+            </div>
+          ) : (
+            !error && (
+              <div className="mt-20 p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
+                <p className="text-secondary text-sm">Henüz deneyim eklenmemiş.</p>
+              </div>
+            )
+          )}
+        </>
       )}
     </>
   );
