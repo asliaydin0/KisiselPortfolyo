@@ -4,6 +4,7 @@ import { FiEdit2, FiTrash2, FiPlus, FiUpload, FiExternalLink } from "react-icons
 import { supabase } from "../../config/supabaseClient";
 import ConfirmDialog from "../../components/admin/ConfirmDialog";
 import ImageCropperModal from "../../components/admin/ImageCropperModal";
+import GitHubImportPanel from "../../components/admin/GitHubImportPanel";
 import { validateImageFile } from "../../utils/cropImage";
 import {
   adminInputClass,
@@ -213,11 +214,20 @@ const AdminProjects = () => {
           </p>
         </div>
         {!showForm && (
-          <button onClick={openCreateForm} className={adminBtnPrimary}>
-            <FiPlus /> Yeni Proje
-          </button>
+          <div className="flex flex-wrap gap-3">
+            <button onClick={openCreateForm} className={adminBtnPrimary}>
+              <FiPlus /> Yeni Proje
+            </button>
+          </div>
         )}
       </div>
+
+      {!showForm && (
+        <GitHubImportPanel
+          existingProjects={projects}
+          onImported={fetchProjects}
+        />
+      )}
 
       {showForm && (
         <form
