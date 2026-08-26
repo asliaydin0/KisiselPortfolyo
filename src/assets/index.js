@@ -20,6 +20,13 @@ import redux from "./tech/redux.png";
 import tailwind from "./tech/tailwind.png";
 import typescript from "./tech/typescript.png";
 import threejs from "./tech/threejs.svg";
+import python from "./tech/python.png";
+import dart from "./tech/dart.png";
+import fastapi from "./tech/fastapi.png";
+import unity from "./tech/unity.png";
+import php from "./tech/php.png";
+import mysql from "./tech/mysql.png";
+import csharp from "./tech/csharp.png";
 
 import meta from "./company/meta.png";
 import shopify from "./company/shopify.png";
@@ -52,6 +59,13 @@ export {
   tailwind,
   typescript,
   threejs,
+  python,
+  dart,
+  fastapi,
+  unity,
+  php,
+  mysql,
+  csharp,
   meta,
   shopify,
   starbucks,
