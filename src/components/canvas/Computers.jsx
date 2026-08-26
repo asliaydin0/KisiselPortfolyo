@@ -5,6 +5,8 @@ import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
 import CanvasLoader from "../Loader";
 import { webglCanvasProps } from "../../utils/webglCanvasProps";
 
+useGLTF.preload("./desktop_pc/scene.gltf");
+
 const Computers = memo(({ isMobile }) => {
   const computer = useGLTF("./desktop_pc/scene.gltf");
 
@@ -17,7 +19,7 @@ const Computers = memo(({ isMobile }) => {
         penumbra={1}
         intensity={1}
         castShadow
-        shadow-mapSize={1024}
+        shadow-mapSize={isMobile ? 512 : 1024}
       />
       <pointLight intensity={1} />
       <primitive
@@ -53,9 +55,10 @@ const ComputersCanvas = memo(() => {
   return (
     <Canvas
       {...webglCanvasProps}
+      dpr={isMobile ? [1, 1] : [1, 1.5]}
       shadows
       camera={{ position: [20, 3, 5], fov: 25 }}
-      className="!absolute !inset-0 !w-full !h-full pointer-events-none"
+      className="!absolute !inset-0 !w-full !h-full"
       style={{ background: "transparent" }}
     >
       <Suspense fallback={<CanvasLoader />}>
