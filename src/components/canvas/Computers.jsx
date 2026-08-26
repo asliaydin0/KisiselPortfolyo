@@ -55,6 +55,8 @@ const ComputersCanvas = memo(() => {
       {...webglCanvasProps}
       shadows
       camera={{ position: [20, 3, 5], fov: 25 }}
+      className="!absolute !inset-0 !w-full !h-full pointer-events-none"
+      style={{ background: "transparent" }}
     >
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls

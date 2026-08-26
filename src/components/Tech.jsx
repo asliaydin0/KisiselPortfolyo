@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 
-import BallCanvas, { resolveIconFor3D } from "./canvas/Ball";
+import TechBall2D from "./TechBall2D";
+import { resolveIconFor3D } from "./canvas/Ball";
 import { SectionWrapper } from "../hoc";
 import { formatSupabaseError, assertSupabaseClient } from "../utils/supabaseHelpers";
 import { getSkillIcon } from "../utils/techIconMap";
 import { technologies as fallbackTechnologies } from "../constants";
 import SectionLoader from "./SectionLoader";
 import DataFetchError from "./DataFetchError";
-import ErrorBoundary from "./ErrorBoundary";
 
 const mapSkillRow = (row) => {
   const name = row.yetenek_adi ?? "";
@@ -81,13 +81,10 @@ const Tech = () => {
         >
           {stableSkills.map((technology) => (
             <div
-              className="w-28 h-28"
               key={technology.id}
               title={`${technology.name} – %${technology.seviye}`}
             >
-              <ErrorBoundary message="İkon yüklenemedi.">
-                <BallCanvas icon={technology.icon} name={technology.name} />
-              </ErrorBoundary>
+              <TechBall2D icon={technology.icon} name={technology.name} />
             </div>
           ))}
         </div>

@@ -1,13 +1,10 @@
-import { Suspense, lazy } from "react";
+import { Suspense } from "react";
 import { motion } from "framer-motion";
 import { styles } from "../styles";
+import { ComputersCanvas } from "./canvas";
 import { useSiteSettings, renderHeroTitle } from "../context/SiteSettingsContext";
 import ErrorBoundary from "./ErrorBoundary";
 import SceneLoader from "./SceneLoader";
-
-const ComputersCanvas = lazy(() =>
-  import("./canvas/Computers").then((mod) => ({ default: mod.default }))
-);
 
 const Hero = () => {
   const { settings } = useSiteSettings();
@@ -17,7 +14,7 @@ const Hero = () => {
   return (
     <section className="relative w-full h-screen mx-auto">
       <div
-        className={`absolute inset-0 top-[120px] max-w-7xl mx-auto ${styles.paddingX} flex flex-row justify-between items-start gap-5`}
+        className={`absolute inset-0 top-[120px] max-w-7xl mx-auto ${styles.paddingX} flex flex-row justify-between items-start gap-5 z-10`}
       >
         <div className="flex flex-row gap-5">
           <div className="flex flex-col justify-center items-center mt-5">
@@ -64,9 +61,7 @@ const Hero = () => {
         <a href="#about">
           <div className="w-[35px] h-[64px] rounded-3xl border-4 border-secondary flex justify-center items-start p-2">
             <motion.div
-              animate={{
-                y: [0, 24, 0],
-              }}
+              animate={{ y: [0, 24, 0] }}
               transition={{
                 duration: 1.5,
                 repeat: Infinity,
@@ -78,11 +73,13 @@ const Hero = () => {
         </a>
       </div>
 
-      <ErrorBoundary message="3D bilgisayar modeli yüklenemedi.">
-        <Suspense fallback={<SceneLoader label="3D model yükleniyor..." />}>
-          <ComputersCanvas />
-        </Suspense>
-      </ErrorBoundary>
+      <div className="absolute inset-0 z-0">
+        <ErrorBoundary message="3D bilgisayar modeli yüklenemedi.">
+          <Suspense fallback={<SceneLoader label="3D model yükleniyor..." />}>
+            <ComputersCanvas />
+          </Suspense>
+        </ErrorBoundary>
+      </div>
     </section>
   );
 };

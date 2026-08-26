@@ -6,6 +6,7 @@ export const webglCanvasProps = {
     preserveDrawingBuffer: true,
     powerPreference: "high-performance",
     antialias: true,
+    alpha: true,
   },
   onCreated: ({ gl }) => {
     const canvas = gl.domElement;
@@ -19,7 +20,9 @@ export const webglCanvasProps = {
 
     return () => {
       canvas.removeEventListener("webglcontextlost", handleContextLost);
-      gl.dispose();
+      if (!gl.getContext()?.isContextLost()) {
+        gl.dispose();
+      }
     };
   },
 };
