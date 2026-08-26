@@ -219,7 +219,7 @@ const normalizeKey = (name) =>
 const normalizeSpaced = (name) =>
   (name ?? "").trim().toLowerCase().replace(/\s+/g, " ");
 
-/** Bilinmeyen teknolojiler için baş harfli SVG ikon */
+/** Bilinmeyen teknolojiler için baş harfli PNG ikon (WebGL uyumlu) */
 export const createInitialsIcon = (name) => {
   const safeName = (name ?? "").trim();
   const words = safeName.split(/\s+/).filter(Boolean);
@@ -229,12 +229,30 @@ export const createInitialsIcon = (name) => {
       : words[0]?.slice(0, 2) || "?"
   ).toUpperCase();
 
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
-    <rect width="128" height="128" rx="28" fill="#915EFF"/>
-    <text x="64" y="72" text-anchor="middle" fill="#ffffff" font-size="44" font-family="Arial,sans-serif" font-weight="700">${initials}</text>
-  </svg>`;
+  if (typeof document === "undefined") {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><rect width="128" height="128" rx="28" fill="#915EFF"/><text x="64" y="72" text-anchor="middle" fill="#ffffff" font-size="44" font-family="Arial,sans-serif" font-weight="700">${initials}</text></svg>`;
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+  }
 
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+  const canvas = document.createElement("canvas");
+  canvas.width = 128;
+  canvas.height = 128;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    return `data:image/png;base64,`;
+  }
+
+  ctx.fillStyle = "#915EFF";
+  ctx.beginPath();
+  ctx.roundRect(0, 0, 128, 128, 28);
+  ctx.fill();
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "bold 44px Arial, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(initials, 64, 68);
+
+  return canvas.toDataURL("image/png");
 };
 
 const getCdnIconUrl = (slug) => {

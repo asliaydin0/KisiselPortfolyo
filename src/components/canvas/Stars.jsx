@@ -3,13 +3,26 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Points, PointMaterial, Preload } from "@react-three/drei";
 import * as random from "maath/random/dist/maath-random.esm";
 
-import { webglCanvasProps, animatedWebglCanvasProps } from "../../utils/webglCanvasProps";
+import { animatedWebglCanvasProps } from "../../utils/webglCanvasProps";
+
+const STAR_COUNT = 5000;
+
+const createStarPositions = () => {
+  const positions = random.inSphere(
+    new Float32Array(STAR_COUNT * 3),
+    { radius: 1.2 }
+  );
+
+  for (let i = 0; i < positions.length; i++) {
+    if (!Number.isFinite(positions[i])) positions[i] = 0;
+  }
+
+  return positions;
+};
 
 const Stars = memo((props) => {
   const ref = useRef();
-  const [sphere] = useState(() =>
-    random.inSphere(new Float32Array(5000), { radius: 1.2 })
-  );
+  const [sphere] = useState(createStarPositions);
 
   useFrame((state, delta) => {
     if (!ref.current) return;

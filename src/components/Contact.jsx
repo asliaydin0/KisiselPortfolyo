@@ -7,7 +7,7 @@ import { styles } from "../styles";
 import { SectionWrapper } from "../hoc";
 import { slideIn } from "../utils/motion";
 import ErrorBoundary from "./ErrorBoundary";
-import CanvasLoader from "./Loader";
+import SceneLoader from "./SceneLoader";
 
 const EarthCanvas = lazy(() =>
   import("./canvas/Earth").then((mod) => ({ default: mod.default }))
@@ -132,7 +132,7 @@ const Contact = () => {
           className="xl:flex-1 xl:h-auto md:h-[550px] h-[350px]"
         >
           <ErrorBoundary message="3D dünya modeli yüklenemedi.">
-            <Suspense fallback={<CanvasLoader />}>
+            <Suspense fallback={<SceneLoader label="3D model yükleniyor..." />}>
               <EarthCanvas />
             </Suspense>
           </ErrorBoundary>

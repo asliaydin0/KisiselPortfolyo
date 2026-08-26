@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { styles } from "../styles";
 import { useSiteSettings, renderHeroTitle } from "../context/SiteSettingsContext";
 import ErrorBoundary from "./ErrorBoundary";
-import CanvasLoader from "./Loader";
+import SceneLoader from "./SceneLoader";
 
 const ComputersCanvas = lazy(() =>
   import("./canvas/Computers").then((mod) => ({ default: mod.default }))
@@ -79,7 +79,7 @@ const Hero = () => {
       </div>
 
       <ErrorBoundary message="3D bilgisayar modeli yüklenemedi.">
-        <Suspense fallback={<CanvasLoader />}>
+        <Suspense fallback={<SceneLoader label="3D model yükleniyor..." />}>
           <ComputersCanvas />
         </Suspense>
       </ErrorBoundary>

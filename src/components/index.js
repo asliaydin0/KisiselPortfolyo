@@ -8,6 +8,7 @@ import Works from "./Works";
 import Feedbacks from "./Feedbacks";
 import Contact from "./Contact";
 import CanvasLoader from "./Loader";
+import SceneLoader from "./SceneLoader";
 import ProtectedRoute from "./ProtectedRoute";
 import ErrorBoundary from "./ErrorBoundary";
 
@@ -21,6 +22,7 @@ export {
   Feedbacks,
   Contact,
   CanvasLoader,
+  SceneLoader,
   EarthCanvas, 
   BallCanvas, 
   ComputersCanvas, 

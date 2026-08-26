@@ -15,6 +15,18 @@ import { webglCanvasProps } from "../../utils/webglCanvasProps";
 const COLS = 7;
 const SPACING = 2.75;
 
+/** Texture yüklemeden düz renkli küre – hata durumunda güvenli yedek */
+const FallbackBall = ({ position = [0, 0, 0] }) => (
+  <group position={position}>
+    <Float speed={1.75} rotationIntensity={1} floatIntensity={2}>
+      <mesh castShadow receiveShadow scale={2.75}>
+        <icosahedronGeometry args={[1, 1]} />
+        <meshStandardMaterial color="#915EFF" flatShading />
+      </mesh>
+    </Float>
+  </group>
+);
+
 class BallErrorBoundary extends Component {
   constructor(props) {
     super(props);
@@ -27,7 +39,7 @@ class BallErrorBoundary extends Component {
 
   render() {
     if (this.state.hasError) {
-      return <BallMesh imgUrl={this.props.fallbackUrl} />;
+      return <FallbackBall position={this.props.position} />;
     }
     return this.props.children;
   }
@@ -67,10 +79,11 @@ const TechBall = memo(({ imgUrl, name, position }) => {
     () => createInitialsIcon(name || "?"),
     [name]
   );
+  const textureUrl = imgUrl || fallbackUrl;
 
   return (
-    <BallErrorBoundary fallbackUrl={fallbackUrl}>
-      <BallMesh imgUrl={imgUrl || fallbackUrl} position={position} />
+    <BallErrorBoundary position={position}>
+      <BallMesh imgUrl={textureUrl} position={position} />
     </BallErrorBoundary>
   );
 });
@@ -135,7 +148,7 @@ const BallCanvas = memo(({ icon, name = "" }) => {
     <Canvas {...webglCanvasProps}>
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls enableZoom={false} />
-        <BallErrorBoundary fallbackUrl={fallbackUrl}>
+        <BallErrorBoundary position={[0, 0, 0]}>
           <BallMesh imgUrl={icon || fallbackUrl} />
         </BallErrorBoundary>
       </Suspense>
