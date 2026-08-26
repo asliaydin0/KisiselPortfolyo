@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 
-import { TechBallsCanvas } from "./canvas/Ball";
+import BallCanvas, { resolveIconFor3D } from "./canvas/Ball";
 import { SectionWrapper } from "../hoc";
 import { formatSupabaseError, assertSupabaseClient } from "../utils/supabaseHelpers";
 import { getSkillIcon } from "../utils/techIconMap";
@@ -9,12 +9,17 @@ import SectionLoader from "./SectionLoader";
 import DataFetchError from "./DataFetchError";
 import ErrorBoundary from "./ErrorBoundary";
 
-const mapSkillRow = (row) => ({
-  id: row.id,
-  name: row.yetenek_adi ?? "",
-  icon: getSkillIcon(row.yetenek_adi),
-  seviye: row.seviye ?? 0,
-});
+const mapSkillRow = (row) => {
+  const name = row.yetenek_adi ?? "";
+  const icon = resolveIconFor3D(name, getSkillIcon(name));
+
+  return {
+    id: row.id,
+    name,
+    icon,
+    seviye: row.seviye ?? 0,
+  };
+};
 
 const Tech = () => {
   const [skills, setSkills] = useState([]);
@@ -42,7 +47,7 @@ const Tech = () => {
         fallbackTechnologies.map((tech, index) => ({
           id: `fallback-${index}`,
           name: tech.name ?? "",
-          icon: tech.icon,
+          icon: resolveIconFor3D(tech.name ?? "", tech.icon),
           seviye: 80,
         }))
       );
@@ -55,15 +60,7 @@ const Tech = () => {
     fetchSkills();
   }, [fetchSkills]);
 
-  const canvasSkills = useMemo(
-    () =>
-      skills.map(({ id, name, icon }) => ({
-        id,
-        name,
-        icon,
-      })),
-    [skills]
-  );
+  const stableSkills = useMemo(() => skills, [skills]);
 
   if (loading) {
     return <SectionLoader label="Yetenekler yükleniyor..." />;
@@ -72,15 +69,27 @@ const Tech = () => {
   return (
     <>
       {error && <DataFetchError message={error} onRetry={fetchSkills} />}
-      {skills.length === 0 && !error ? (
+      {stableSkills.length === 0 && !error ? (
         <div className="p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
           <p className="text-secondary text-sm">Henüz yetenek eklenmemiş.</p>
         </div>
       ) : (
-        <div className={error ? "mt-8" : ""}>
-          <ErrorBoundary message="Yetenek ikonları yüklenemedi.">
-            <TechBallsCanvas skills={canvasSkills} />
-          </ErrorBoundary>
+        <div
+          className={`flex flex-row flex-wrap justify-center gap-10 ${
+            error ? "mt-8" : ""
+          }`}
+        >
+          {stableSkills.map((technology) => (
+            <div
+              className="w-28 h-28"
+              key={technology.id}
+              title={`${technology.name} – %${technology.seviye}`}
+            >
+              <ErrorBoundary message="İkon yüklenemedi.">
+                <BallCanvas icon={technology.icon} name={technology.name} />
+              </ErrorBoundary>
+            </div>
+          ))}
         </div>
       )}
     </>
