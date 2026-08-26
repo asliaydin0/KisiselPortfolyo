@@ -9,6 +9,7 @@ import Feedbacks from "./Feedbacks";
 import Contact from "./Contact";
 import CanvasLoader from "./Loader";
 import ProtectedRoute from "./ProtectedRoute";
+import ErrorBoundary from "./ErrorBoundary";
 
 export {
   Hero,
@@ -24,5 +25,6 @@ export {
   BallCanvas, 
   ComputersCanvas, 
   StarsCanvas,
-  ProtectedRoute
+  ProtectedRoute,
+  ErrorBoundary,
 };

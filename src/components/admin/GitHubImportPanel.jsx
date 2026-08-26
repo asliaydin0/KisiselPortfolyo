@@ -154,7 +154,7 @@ const GitHubImportPanel = ({ existingProjects = [], onImported }) => {
       <button
         type="button"
         onClick={handleFetch}
-        disabled={fetching || !username.trim()}
+        disabled={fetching || !(username ?? "").trim()}
         className={adminBtnPrimary}
       >
         {fetching ? (

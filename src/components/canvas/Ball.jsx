@@ -1,4 +1,4 @@
-import React, { Suspense, Component } from "react";
+import React, { Suspense, Component, memo, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import {
   Decal,
@@ -10,6 +10,10 @@ import {
 
 import CanvasLoader from "../Loader";
 import { createInitialsIcon } from "../../utils/techIconMap";
+import { webglCanvasProps } from "../../utils/webglCanvasProps";
+
+const COLS = 7;
+const SPACING = 2.75;
 
 class BallErrorBoundary extends Component {
   constructor(props) {
@@ -23,60 +27,123 @@ class BallErrorBoundary extends Component {
 
   render() {
     if (this.state.hasError) {
-      return <Ball imgUrl={this.props.fallbackUrl} />;
+      return <BallMesh imgUrl={this.props.fallbackUrl} />;
     }
     return this.props.children;
   }
 }
 
-const Ball = ({ imgUrl }) => {
+const BallMesh = ({ imgUrl, position = [0, 0, 0] }) => {
   const [decal] = useTexture([imgUrl], (loader) => {
     loader.crossOrigin = "anonymous";
   });
 
   return (
-    <Float speed={1.75} rotationIntensity={1} floatIntensity={2}>
-      <ambientLight intensity={0.25} />
-      <directionalLight position={[0, 0, 0.05]} />
-      <mesh castShadow receiveShadow scale={2.75}>
-        <icosahedronGeometry args={[1, 1]} />
-        <meshStandardMaterial
-          color='#fff8eb'
-          polygonOffset
-          polygonOffsetFactor={-5}
-          flatShading
-        />
-        <Decal
-          position={[0, 0, 1]}
-          rotation={[2 * Math.PI, 0, 6.25]}
-          scale={1}
-          map={decal}
-          flatShading
-        />
-      </mesh>
-    </Float>
+    <group position={position}>
+      <Float speed={1.75} rotationIntensity={1} floatIntensity={2}>
+        <mesh castShadow receiveShadow scale={2.75}>
+          <icosahedronGeometry args={[1, 1]} />
+          <meshStandardMaterial
+            color="#fff8eb"
+            polygonOffset
+            polygonOffsetFactor={-5}
+            flatShading
+          />
+          <Decal
+            position={[0, 0, 1]}
+            rotation={[2 * Math.PI, 0, 6.25]}
+            scale={1}
+            map={decal}
+            flatShading
+          />
+        </mesh>
+      </Float>
+    </group>
   );
 };
 
-const BallCanvas = ({ icon, name = "" }) => {
-  const fallbackUrl = createInitialsIcon(name || "?");
+const TechBall = memo(({ imgUrl, name, position }) => {
+  const fallbackUrl = useMemo(
+    () => createInitialsIcon(name || "?"),
+    [name]
+  );
 
   return (
-    <Canvas
-      frameloop='demand'
-      dpr={[1, 2]}
-      gl={{ preserveDrawingBuffer: true }}
-    >
+    <BallErrorBoundary fallbackUrl={fallbackUrl}>
+      <BallMesh imgUrl={imgUrl || fallbackUrl} position={position} />
+    </BallErrorBoundary>
+  );
+});
+
+TechBall.displayName = "TechBall";
+
+const computeBallPosition = (index, total) => {
+  const row = Math.floor(index / COLS);
+  const col = index % COLS;
+  const itemsInRow = Math.min(COLS, total - row * COLS);
+  const x = (col - (itemsInRow - 1) / 2) * SPACING;
+  const y = -row * SPACING;
+  return [x, y, 0];
+};
+
+/**
+ * All skill balls share ONE WebGL context to avoid browser context limits.
+ */
+export const TechBallsCanvas = memo(({ skills }) => {
+  const rows = Math.max(1, Math.ceil(skills.length / COLS));
+  const canvasHeight = rows * 112;
+
+  if (!skills.length) return null;
+
+  return (
+    <div className="w-full" style={{ height: canvasHeight }}>
+      <Canvas
+        {...webglCanvasProps}
+        orthographic
+        camera={{ zoom: 45, position: [0, 0, 10], near: 0.1, far: 100 }}
+        style={{ width: "100%", height: "100%" }}
+      >
+        <Suspense fallback={<CanvasLoader />}>
+          <ambientLight intensity={0.25} />
+          <directionalLight position={[0, 0, 5]} />
+          <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
+          {skills.map((skill, index) => (
+            <TechBall
+              key={skill.id}
+              imgUrl={skill.icon}
+              name={skill.name}
+              position={computeBallPosition(index, skills.length)}
+            />
+          ))}
+        </Suspense>
+        <Preload all />
+      </Canvas>
+    </div>
+  );
+});
+
+TechBallsCanvas.displayName = "TechBallsCanvas";
+
+/** @deprecated Use TechBallsCanvas for multiple balls – each instance creates a WebGL context. */
+const BallCanvas = memo(({ icon, name = "" }) => {
+  const fallbackUrl = useMemo(
+    () => createInitialsIcon(name || "?"),
+    [name]
+  );
+
+  return (
+    <Canvas {...webglCanvasProps}>
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls enableZoom={false} />
         <BallErrorBoundary fallbackUrl={fallbackUrl}>
-          <Ball imgUrl={icon || fallbackUrl} />
+          <BallMesh imgUrl={icon || fallbackUrl} />
         </BallErrorBoundary>
       </Suspense>
-
       <Preload all />
     </Canvas>
   );
-};
+});
+
+BallCanvas.displayName = "BallCanvas";
 
 export default BallCanvas;

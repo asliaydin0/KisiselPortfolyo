@@ -1,7 +1,13 @@
+import { Suspense, lazy } from "react";
 import { motion } from "framer-motion";
 import { styles } from "../styles";
-import { ComputersCanvas } from "./canvas";
 import { useSiteSettings, renderHeroTitle } from "../context/SiteSettingsContext";
+import ErrorBoundary from "./ErrorBoundary";
+import CanvasLoader from "./Loader";
+
+const ComputersCanvas = lazy(() =>
+  import("./canvas/Computers").then((mod) => ({ default: mod.default }))
+);
 
 const Hero = () => {
   const { settings } = useSiteSettings();
@@ -72,7 +78,11 @@ const Hero = () => {
         </a>
       </div>
 
-      <ComputersCanvas />
+      <ErrorBoundary message="3D bilgisayar modeli yüklenemedi.">
+        <Suspense fallback={<CanvasLoader />}>
+          <ComputersCanvas />
+        </Suspense>
+      </ErrorBoundary>
     </section>
   );
 };

@@ -136,7 +136,7 @@ const AdminProjects = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!form.baslik.trim()) {
+    if (!(form.baslik ?? "").trim()) {
       toast.error("Proje başlığı zorunludur.");
       return;
     }
@@ -146,14 +146,14 @@ const AdminProjects = () => {
 
     try {
       const payload = {
-        baslik: form.baslik.trim(),
-        aciklama: form.aciklama.trim(),
-        teknolojiler: form.teknolojiler
+        baslik: (form.baslik ?? "").trim(),
+        aciklama: (form.aciklama ?? "").trim(),
+        teknolojiler: (form.teknolojiler ?? "")
           .split(",")
-          .map((t) => t.trim())
+          .map((t) => (t ?? "").trim())
           .filter(Boolean),
-        github_url: form.github_url.trim() || null,
-        live_url: form.live_url.trim() || null,
+        github_url: (form.github_url ?? "").trim() || null,
+        live_url: (form.live_url ?? "").trim() || null,
         image_url: form.image_url || null,
       };
 

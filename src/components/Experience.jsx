@@ -34,13 +34,16 @@ const mapExperience = (row, index) => {
   const date = start ? (end ? `${start} – ${end}` : start) : end;
 
   const points = row.aciklama
-    ? row.aciklama.split("\n").map((line) => line.trim()).filter(Boolean)
+    ? row.aciklama
+        .split("\n")
+        .map((line) => (line ?? "").trim())
+        .filter(Boolean)
     : [];
 
   return {
     id: row.id,
-    title: row.pozisyon,
-    company_name: row.sirket_adi,
+    title: row.pozisyon ?? "",
+    company_name: row.sirket_adi ?? "",
     date,
     points,
     icon: COMPANY_ICONS[index % COMPANY_ICONS.length],

@@ -1,19 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 
-import { BallCanvas } from "./canvas";
+import { TechBallsCanvas } from "./canvas/Ball";
 import { SectionWrapper } from "../hoc";
 import { formatSupabaseError, assertSupabaseClient } from "../utils/supabaseHelpers";
 import { getSkillIcon } from "../utils/techIconMap";
 import { technologies as fallbackTechnologies } from "../constants";
 import SectionLoader from "./SectionLoader";
 import DataFetchError from "./DataFetchError";
+import ErrorBoundary from "./ErrorBoundary";
+
+const mapSkillRow = (row) => ({
+  id: row.id,
+  name: row.yetenek_adi ?? "",
+  icon: getSkillIcon(row.yetenek_adi),
+  seviye: row.seviye ?? 0,
+});
 
 const Tech = () => {
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchSkills = async () => {
+  const fetchSkills = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -26,21 +34,14 @@ const Tech = () => {
 
       if (fetchError) throw fetchError;
 
-      setSkills(
-        (data || []).map((row) => ({
-          id: row.id,
-          name: row.yetenek_adi,
-          icon: getSkillIcon(row.yetenek_adi),
-          seviye: row.seviye,
-        }))
-      );
+      setSkills((data || []).map(mapSkillRow));
     } catch (err) {
       console.error("Yetenekler yüklenirken hata:", err);
       setError(formatSupabaseError(err));
       setSkills(
         fallbackTechnologies.map((tech, index) => ({
           id: `fallback-${index}`,
-          name: tech.name,
+          name: tech.name ?? "",
           icon: tech.icon,
           seviye: 80,
         }))
@@ -48,11 +49,21 @@ const Tech = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchSkills();
-  }, []);
+  }, [fetchSkills]);
+
+  const canvasSkills = useMemo(
+    () =>
+      skills.map(({ id, name, icon }) => ({
+        id,
+        name,
+        icon,
+      })),
+    [skills]
+  );
 
   if (loading) {
     return <SectionLoader label="Yetenekler yükleniyor..." />;
@@ -66,16 +77,10 @@ const Tech = () => {
           <p className="text-secondary text-sm">Henüz yetenek eklenmemiş.</p>
         </div>
       ) : (
-        <div className={`flex flex-row flex-wrap justify-center gap-10 ${error ? "mt-8" : ""}`}>
-          {skills.map((technology) => (
-            <div
-              className="w-28 h-28"
-              key={technology.id}
-              title={`${technology.name} – %${technology.seviye}`}
-            >
-              <BallCanvas icon={technology.icon} name={technology.name} />
-            </div>
-          ))}
+        <div className={error ? "mt-8" : ""}>
+          <ErrorBoundary message="Yetenek ikonları yüklenemedi.">
+            <TechBallsCanvas skills={canvasSkills} />
+          </ErrorBoundary>
         </div>
       )}
     </>

@@ -132,7 +132,7 @@ const AdminSettings = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!form.hero_title.trim()) {
+    if (!(form.hero_title ?? "").trim()) {
       toast.error("Hero başlığı zorunludur.");
       return;
     }
@@ -142,8 +142,8 @@ const AdminSettings = () => {
 
     try {
       const payload = {
-        hero_title: form.hero_title.trim(),
-        hero_subtitle: form.hero_subtitle.trim() || null,
+        hero_title: (form.hero_title ?? "").trim(),
+        hero_subtitle: (form.hero_subtitle ?? "").trim() || null,
         logo_url: form.logo_url || null,
         profile_img_url: form.profile_img_url || null,
       };

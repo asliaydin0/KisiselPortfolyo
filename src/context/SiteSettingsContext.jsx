@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
 import { formatSupabaseError, assertSupabaseClient } from "../utils/supabaseHelpers";
 
 export const SETTINGS_ID = 1;
@@ -24,7 +24,7 @@ export const SiteSettingsProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchSettings = async () => {
+  const fetchSettings = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -50,16 +50,19 @@ export const SiteSettingsProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchSettings();
-  }, []);
+  }, [fetchSettings]);
+
+  const value = useMemo(
+    () => ({ settings, loading, error, refetch: fetchSettings }),
+    [settings, loading, error, fetchSettings]
+  );
 
   return (
-    <SiteSettingsContext.Provider
-      value={{ settings, loading, error, refetch: fetchSettings }}
-    >
+    <SiteSettingsContext.Provider value={value}>
       {children}
     </SiteSettingsContext.Provider>
   );

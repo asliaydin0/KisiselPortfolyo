@@ -1,12 +1,17 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, Suspense, lazy } from "react";
 import { motion } from "framer-motion";
 import emailjs from "@emailjs/browser";
 import { FaLinkedin, FaInstagram, FaTwitter, FaGithub } from "react-icons/fa";
 
 import { styles } from "../styles";
-import { EarthCanvas } from "./canvas";
 import { SectionWrapper } from "../hoc";
 import { slideIn } from "../utils/motion";
+import ErrorBoundary from "./ErrorBoundary";
+import CanvasLoader from "./Loader";
+
+const EarthCanvas = lazy(() =>
+  import("./canvas/Earth").then((mod) => ({ default: mod.default }))
+);
 
 const Contact = () => {
   const formRef = useRef();
@@ -126,7 +131,11 @@ const Contact = () => {
           variants={slideIn("right", "tween", 0.2, 1)}
           className="xl:flex-1 xl:h-auto md:h-[550px] h-[350px]"
         >
-          <EarthCanvas />
+          <ErrorBoundary message="3D dünya modeli yüklenemedi.">
+            <Suspense fallback={<CanvasLoader />}>
+              <EarthCanvas />
+            </Suspense>
+          </ErrorBoundary>
         </motion.div>
       </div>
 

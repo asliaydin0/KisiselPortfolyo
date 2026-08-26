@@ -16,8 +16,8 @@ const TAG_COLORS = ["blue-text-gradient", "green-text-gradient", "pink-text-grad
 
 const mapProject = (row) => ({
   id: row.id,
-  name: row.baslik,
-  description: row.aciklama,
+  name: row.baslik ?? "",
+  description: row.aciklama ?? "",
   image: row.image_url,
   source_code_link: row.github_url,
   live_url: row.live_url,

@@ -77,7 +77,7 @@ const AdminSkills = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!form.yetenek_adi.trim()) {
+    if (!(form.yetenek_adi ?? "").trim()) {
       toast.error("Yetenek adı zorunludur.");
       return;
     }
@@ -94,7 +94,7 @@ const AdminSkills = () => {
 
     try {
       const payload = {
-        yetenek_adi: form.yetenek_adi.trim(),
+        yetenek_adi: (form.yetenek_adi ?? "").trim(),
         seviye: form.seviye,
       };
 

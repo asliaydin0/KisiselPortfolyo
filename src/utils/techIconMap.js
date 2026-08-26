@@ -209,18 +209,20 @@ const DEVICON_PATHS = {
 };
 
 const normalizeKey = (name) =>
-  name
+  (name ?? "")
     .trim()
     .toLowerCase()
     .replace(/\.js$/i, "js")
     .replace(/\.ts$/i, "ts")
     .replace(/[^a-z0-9+#]+/g, "");
 
-const normalizeSpaced = (name) => name.trim().toLowerCase().replace(/\s+/g, " ");
+const normalizeSpaced = (name) =>
+  (name ?? "").trim().toLowerCase().replace(/\s+/g, " ");
 
 /** Bilinmeyen teknolojiler için baş harfli SVG ikon */
 export const createInitialsIcon = (name) => {
-  const words = name.trim().split(/\s+/).filter(Boolean);
+  const safeName = (name ?? "").trim();
+  const words = safeName.split(/\s+/).filter(Boolean);
   const initials = (
     words.length >= 2
       ? words[0][0] + words[1][0]
@@ -241,6 +243,8 @@ const getCdnIconUrl = (slug) => {
 };
 
 const lookupLocal = (name) => {
+  if (!name?.trim()) return null;
+
   const spaced = normalizeSpaced(name);
   const compact = normalizeKey(name);
 
@@ -255,6 +259,8 @@ const lookupLocal = (name) => {
 };
 
 const lookupCdnSlug = (name) => {
+  if (!name?.trim()) return null;
+
   const spaced = normalizeSpaced(name);
   const compact = normalizeKey(name);
 
@@ -281,5 +287,5 @@ export const getSkillIcon = (skillName) => {
   const slug = lookupCdnSlug(skillName);
   if (slug) return getCdnIconUrl(slug);
 
-  return createInitialsIcon(skillName);
+  return createInitialsIcon(skillName ?? "");
 };

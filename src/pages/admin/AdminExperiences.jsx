@@ -91,7 +91,7 @@ const AdminExperiences = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!form.sirket_adi.trim() || !form.pozisyon.trim()) {
+    if (!(form.sirket_adi ?? "").trim() || !(form.pozisyon ?? "").trim()) {
       toast.error("Şirket adı ve pozisyon zorunludur.");
       return;
     }
@@ -103,11 +103,11 @@ const AdminExperiences = () => {
 
     try {
       const payload = {
-        sirket_adi: form.sirket_adi.trim(),
-        pozisyon: form.pozisyon.trim(),
+        sirket_adi: (form.sirket_adi ?? "").trim(),
+        pozisyon: (form.pozisyon ?? "").trim(),
         baslangic_tarihi: form.baslangic_tarihi || null,
         bitis_tarihi: devamEdiyor ? null : form.bitis_tarihi || null,
-        aciklama: form.aciklama.trim() || null,
+        aciklama: (form.aciklama ?? "").trim() || null,
       };
 
       if (editingId) {
