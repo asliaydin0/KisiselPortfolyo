@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, Component } from "react";
 import { Canvas } from "@react-three/fiber";
 import {
   Decal,
@@ -9,9 +9,30 @@ import {
 } from "@react-three/drei";
 
 import CanvasLoader from "../Loader";
+import { createInitialsIcon } from "../../utils/techIconMap";
 
-const Ball = (props) => {
-  const [decal] = useTexture([props.imgUrl]);
+class BallErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <Ball imgUrl={this.props.fallbackUrl} />;
+    }
+    return this.props.children;
+  }
+}
+
+const Ball = ({ imgUrl }) => {
+  const [decal] = useTexture([imgUrl], (loader) => {
+    loader.crossOrigin = "anonymous";
+  });
 
   return (
     <Float speed={1.75} rotationIntensity={1} floatIntensity={2}>
@@ -37,7 +58,9 @@ const Ball = (props) => {
   );
 };
 
-const BallCanvas = ({ icon }) => {
+const BallCanvas = ({ icon, name = "" }) => {
+  const fallbackUrl = createInitialsIcon(name || "?");
+
   return (
     <Canvas
       frameloop='demand'
@@ -46,7 +69,9 @@ const BallCanvas = ({ icon }) => {
     >
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls enableZoom={false} />
-        <Ball imgUrl={icon} />
+        <BallErrorBoundary fallbackUrl={fallbackUrl}>
+          <Ball imgUrl={icon || fallbackUrl} />
+        </BallErrorBoundary>
       </Suspense>
 
       <Preload all />

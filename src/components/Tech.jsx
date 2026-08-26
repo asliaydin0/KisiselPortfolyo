@@ -73,7 +73,7 @@ const Tech = () => {
               key={technology.id}
               title={`${technology.name} – %${technology.seviye}`}
             >
-              <BallCanvas icon={technology.icon} />
+              <BallCanvas icon={technology.icon} name={technology.name} />
             </div>
           ))}
         </div>
