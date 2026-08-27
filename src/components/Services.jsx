@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 
 import ServiceCard from "./ServiceCard";
@@ -15,9 +15,9 @@ import SectionLoader from "./SectionLoader";
 import DataFetchError from "./DataFetchError";
 
 const HIGHLIGHT_STATS = [
-  { value: "6+", label: "Hizmet" },
-  { value: "100%", label: "Özel" },
-  { value: "∞", label: "Destek" },
+  { value: "6+", label: "Hizmet Alanı" },
+  { value: "100%", label: "Özel Çözüm" },
+  { value: "∞", label: "Revizyon Desteği" },
 ];
 
 const mapServiceRow = (row) => ({
@@ -70,39 +70,67 @@ const Services = () => {
     fetchServices();
   }, [fetchServices]);
 
+  const serviceTags = useMemo(
+    () => services.map((s) => s.title).filter(Boolean),
+    [services]
+  );
+
   return (
     <div className="relative">
       <div
         aria-hidden
-        className="hidden sm:block absolute -top-32 left-1/2 -translate-x-1/2 w-[min(720px,90vw)] h-[320px] bg-[#915EFF]/8 blur-[100px] rounded-full pointer-events-none"
+        className="absolute -top-32 left-1/2 -translate-x-1/2 w-[min(720px,90vw)] h-[320px] bg-[#915EFF]/12 blur-[100px] rounded-full pointer-events-none"
+      />
+      <div
+        aria-hidden
+        className="absolute top-1/2 -right-32 w-64 h-64 bg-[#00cea8]/8 blur-[80px] rounded-full pointer-events-none"
       />
 
-      <motion.div variants={textVariant()} className="relative text-center sm:text-left">
-        <p className={styles.sectionSubText}>Hizmetler</p>
-        <h2 className={`${styles.sectionHeadText} mt-1`}>Ne Sunuyorum?</h2>
+      <motion.div variants={textVariant()} className="relative">
+        <p className={`${styles.sectionSubText} text-center`}>NE SUNUYORUM?</p>
+        <h2 className={`${styles.sectionHeadText} text-center`}>Hizmetlerim</h2>
       </motion.div>
 
-      <motion.p variants={fadeIn("", "", 0.1, 1)} className={`${styles.sectionLead} text-center sm:text-left mx-auto sm:mx-0`}>
-        <span className="sm:hidden">Markanıza özel dijital çözümler.</span>
-        <span className="hidden sm:inline">
-          Markanızı dijitale taşıyan, kullanıcı odaklı ve modern çözümler sunuyorum.
-        </span>
+      <motion.p
+        variants={fadeIn("", "", 0.1, 1)}
+        className="relative mt-4 text-secondary text-[17px] max-w-3xl mx-auto text-center leading-[30px]"
+      >
+        Markanızı dijitale taşıyan, görsel olarak güçlü ve kullanıcı odaklı çözümler
+        sunuyorum. Her projeye özel tasarım ve geliştirme ile fark yaratıyorum.
       </motion.p>
 
       <motion.div
         variants={fadeIn("up", "spring", 0.15, 0.7)}
-        className="hidden sm:grid mt-8 grid-cols-3 gap-4 max-w-md"
+        className="relative mt-8 grid grid-cols-3 gap-3 sm:gap-6 max-w-xl mx-auto"
       >
         {HIGHLIGHT_STATS.map((stat) => (
           <div
             key={stat.label}
-            className="text-center py-3 px-2 rounded-lg bg-white/[0.02] border border-white/[0.06]"
+            className="text-center p-3 sm:p-4 rounded-xl bg-white/[0.03] border border-white/[0.08]"
           >
-            <p className="text-xl font-bold text-white">{stat.value}</p>
-            <p className="text-[11px] text-secondary mt-0.5 tracking-wide">{stat.label}</p>
+            <p className="text-2xl sm:text-3xl font-extrabold text-white">{stat.value}</p>
+            <p className="text-[10px] sm:text-xs text-secondary mt-1">{stat.label}</p>
           </div>
         ))}
       </motion.div>
+
+      {!loading && serviceTags.length > 0 && (
+        <motion.div
+          variants={fadeIn("", "", 0.2, 0.8)}
+          className="relative mt-8 overflow-hidden"
+        >
+          <div className="flex gap-3 animate-[scroll_30s_linear_infinite] w-max">
+            {[...serviceTags, ...serviceTags].map((tag, i) => (
+              <span
+                key={`${tag}-${i}`}
+                className="shrink-0 px-4 py-2 rounded-full text-xs font-medium text-[#dfd9ff]/80 bg-[#915EFF]/10 border border-[#915EFF]/20"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </motion.div>
+      )}
 
       {loading ? (
         <SectionLoader label="Hizmetler yükleniyor..." />
@@ -111,12 +139,12 @@ const Services = () => {
           {error && <DataFetchError message={error} onRetry={fetchServices} />}
 
           {services.length === 0 && !error ? (
-            <div className="mt-10 p-5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-center">
+            <div className="mt-12 p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
               <p className="text-secondary text-sm">Henüz hizmet eklenmemiş.</p>
             </div>
           ) : (
             <div
-              className={`relative mt-8 sm:mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 ${
+              className={`relative mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 ${
                 error ? "opacity-90" : ""
               }`}
             >
@@ -133,17 +161,24 @@ const Services = () => {
 
           <motion.div
             variants={fadeIn("up", "spring", 0.35, 0.75)}
-            className="relative mt-10 sm:mt-14 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-5 sm:p-7 rounded-xl border border-white/[0.08] bg-white/[0.02]"
+            className="relative mt-14 p-6 sm:p-8 rounded-2xl overflow-hidden border border-[#915EFF]/25 bg-gradient-to-br from-[#915EFF]/15 via-tertiary/80 to-[#00cea8]/10"
           >
-            <p className="text-white text-[15px] sm:text-base font-medium text-center sm:text-left">
-              Projeniz için teklif almak ister misiniz?
-            </p>
-            <a
-              href="#contact"
-              className="inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-[#915EFF] hover:bg-[#7b4de5] text-white text-sm font-medium transition-colors w-full sm:w-auto min-h-[44px] shrink-0"
-            >
-              İletişime Geç
-            </a>
+            <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5 text-center sm:text-left">
+              <div>
+                <h3 className="text-white font-bold text-lg sm:text-xl">
+                  Projeniz için doğru çözümü birlikte bulalım
+                </h3>
+                <p className="mt-2 text-secondary text-sm max-w-lg">
+                  Ücretsiz ön görüşme ile ihtiyacınızı dinleyip size özel teklif hazırlayabilirim.
+                </p>
+              </div>
+              <a
+                href="#contact"
+                className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-[#915EFF] hover:bg-[#7b4de5] text-white font-semibold text-sm transition-all duration-300 hover:scale-105 shadow-lg shadow-[#915EFF]/25 shrink-0"
+              >
+                Ücretsiz Teklif Al
+              </a>
+            </div>
           </motion.div>
         </>
       )}

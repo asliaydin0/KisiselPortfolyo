@@ -75,12 +75,10 @@ const ExperienceCard = ({ experience }) => {
   return (
     <VerticalTimelineElement
       contentStyle={{
-        background: "rgba(255,255,255,0.03)",
-        border: "1px solid rgba(255,255,255,0.06)",
-        boxShadow: "none",
+        background: "#1d1836",
         color: "#fff",
       }}
-      contentArrowStyle={{ borderRight: "7px solid rgba(255,255,255,0.06)" }}
+      contentArrowStyle={{ borderRight: "7px solid  #232631" }}
       date={experience.date}
       iconStyle={{
         background: iconStyle.bg,
@@ -91,35 +89,26 @@ const ExperienceCard = ({ experience }) => {
       }
     >
       <div>
-        <h3 className="text-white text-[16px] sm:text-[22px] font-semibold leading-snug">{experience.title}</h3>
-        <p className="text-[#915EFF]/80 text-[12px] sm:text-[14px] font-medium mt-0.5" style={{ margin: 0 }}>
+        <h3 className="text-white text-[24px] font-bold">{experience.title}</h3>
+        <p
+          className="text-secondary text-[16px] font-semibold"
+          style={{ margin: 0 }}
+        >
           {experience.company_name}
         </p>
       </div>
 
       {experience.points.length > 0 && (
-        <>
-          <ul className="sm:hidden mt-3 list-none space-y-1.5">
-            {experience.points.slice(0, 2).map((point, index) => (
-              <li
-                key={`experience-point-m-${experience.id}-${index}`}
-                className="text-white-100 text-[13px] leading-relaxed pl-3 border-l border-[#915EFF]/40"
-              >
-                {point}
-              </li>
-            ))}
-          </ul>
-          <ul className="hidden sm:block mt-5 list-disc ml-5 space-y-2">
-            {experience.points.map((point, index) => (
-              <li
-                key={`experience-point-${experience.id}-${index}`}
-                className="text-white-100 text-[14px] pl-1 tracking-wider"
-              >
-                {point}
-              </li>
-            ))}
-          </ul>
-        </>
+        <ul className="mt-5 list-disc ml-5 space-y-2">
+          {experience.points.map((point, index) => (
+            <li
+              key={`experience-point-${experience.id}-${index}`}
+              className="text-white-100 text-[14px] pl-1 tracking-wider"
+            >
+              {point}
+            </li>
+          ))}
+        </ul>
       )}
     </VerticalTimelineElement>
   );
@@ -159,9 +148,13 @@ const Experience = () => {
 
   return (
     <>
-      <motion.div variants={textVariant()} className="text-center sm:text-left">
-        <p className={styles.sectionSubText}>Deneyim</p>
-        <h2 className={`${styles.sectionHeadText} mt-1`}>Kariyerim</h2>
+      <motion.div variants={textVariant()}>
+        <p className={`${styles.sectionSubText} text-center`}>
+          Şimdiye kadar ne yaptım?
+        </p>
+        <h2 className={`${styles.sectionHeadText} text-center`}>
+          Deneyimlerim
+        </h2>
       </motion.div>
 
       {loading ? (
@@ -172,7 +165,7 @@ const Experience = () => {
             <DataFetchError message={error} onRetry={fetchExperiences} />
           )}
           {experiences.length > 0 ? (
-            <div className={`${error ? "mt-8" : "mt-12 sm:mt-20"} flex flex-col`}>
+            <div className={`${error ? "mt-8" : "mt-20"} flex flex-col`}>
               <VerticalTimeline>
                 {experiences.map((experience) => (
                   <ExperienceCard

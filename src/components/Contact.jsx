@@ -67,65 +67,69 @@ const Contact = () => {
 
   return (
     <>
-      <div className="xl:mt-12 flex xl:flex-row flex-col-reverse gap-8 sm:gap-10 overflow-hidden">
+      <div className="xl:mt-12 flex xl:flex-row flex-col-reverse gap-10 overflow-hidden">
+        {/* Form Alanı */}
         <motion.div
           variants={slideIn("left", "tween", 0.2, 1)}
-          className="flex-[0.75] bg-white/[0.02] border border-white/[0.06] p-5 sm:p-8 rounded-xl"
+          className="flex-[0.75] bg-black-100 p-8 rounded-2xl"
         >
-          <p className={styles.sectionSubText}>İletişim</p>
-          <h3 className={`${styles.sectionHeadText} mt-1`}>Bana Ulaşın</h3>
+          <p className={styles.sectionSubText}>BENİMLE İLETİŞİME GEÇİN</p>
+          <h3 className={styles.sectionHeadText}>İletişim</h3>
 
           <form
             ref={formRef}
             onSubmit={handleSubmit}
-            className="mt-6 sm:mt-10 flex flex-col gap-5 sm:gap-7"
+            className="mt-12 flex flex-col gap-8"
           >
             <label className="flex flex-col">
-              <span className="text-white/90 text-sm font-medium mb-2">İsim</span>
+              <span className="text-white font-medium mb-4">İsmin</span>
               <input
                 type="text"
                 name="name"
                 value={form.name}
                 onChange={handleChange}
                 placeholder="İsminiz nedir?"
-                className="bg-white/[0.04] border border-white/[0.06] py-3 px-4 placeholder:text-secondary/70 text-white text-base rounded-lg outline-none font-normal focus:border-[#915EFF]/40 transition-colors"
+                className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
               />
             </label>
             <label className="flex flex-col">
-              <span className="text-white/90 text-sm font-medium mb-2">E-posta</span>
+              <span className="text-white font-medium mb-4">
+                E-posta Adresin
+              </span>
               <input
                 type="email"
                 name="email"
                 value={form.email}
                 onChange={handleChange}
                 placeholder="E-posta adresiniz nedir?"
-                className="bg-white/[0.04] border border-white/[0.06] py-3 px-4 placeholder:text-secondary/70 text-white text-base rounded-lg outline-none font-normal focus:border-[#915EFF]/40 transition-colors"
+                className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
               />
             </label>
             <label className="flex flex-col">
-              <span className="text-white/90 text-sm font-medium mb-2">Mesaj</span>
+              <span className="text-white font-medium mb-4">Mesajın</span>
               <textarea
-                rows={5}
+                rows={7}
                 name="message"
                 value={form.message}
                 onChange={handleChange}
                 placeholder="Ne söylemek istersiniz?"
-                className="bg-white/[0.04] border border-white/[0.06] py-3 px-4 placeholder:text-secondary/70 text-white text-base rounded-lg outline-none font-normal resize-y min-h-[120px] focus:border-[#915EFF]/40 transition-colors"
+                className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
               />
             </label>
 
             <button
               type="submit"
-              className="bg-[#915EFF] hover:bg-[#7b4de5] py-3 px-8 rounded-full outline-none w-full sm:w-fit text-white text-sm font-medium min-h-[48px] transition-colors"
+              className="bg-tertiary py-3 px-8 rounded-xl outline-none w-fit text-white font-bold shadow-md shadow-primary"
             >
               {loading ? "Gönderiliyor..." : "Gönder"}
             </button>
           </form>
         </motion.div>
 
+        {/* Dünya Modeli */}
         <motion.div
           variants={slideIn("right", "tween", 0.2, 1)}
-          className="xl:flex-1 xl:h-auto md:h-[550px] h-[220px] sm:h-[320px] pointer-events-none sm:pointer-events-auto touch-none sm:touch-auto opacity-60 sm:opacity-100"
+          className="xl:flex-1 xl:h-auto md:h-[550px] h-[350px]"
         >
           <ErrorBoundary message="3D dünya modeli yüklenemedi.">
             <Suspense fallback={<SceneLoader label="3D model yükleniyor..." />}>
@@ -135,24 +139,40 @@ const Contact = () => {
         </motion.div>
       </div>
 
-      <div className="w-full mt-10 sm:mt-12 flex flex-wrap justify-center gap-6 sm:gap-10">
-        {[
-          { href: "https://www.linkedin.com/in/asliaydin0", Icon: FaLinkedin, hover: "hover:text-[#0e76a8]" },
-          { href: "https://www.instagram.com/asliaydn_w", Icon: FaInstagram, hover: "hover:text-pink-500" },
-          { href: "https://twitter.com/Aslaydn0", Icon: FaTwitter, hover: "hover:text-sky-400" },
-          { href: "https://github.com/asliaydin0", Icon: FaGithub, hover: "hover:text-gray-300" },
-        ].map(({ href, Icon, hover }) => (
-          <a
-            key={href}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={href}
-            className={`text-white text-4xl sm:text-5xl ${hover} transition-transform duration-300 transform hover:scale-110 flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14`}
-          >
-            <Icon />
-          </a>
-        ))}
+      {/* Sosyal Medya Butonları */}
+      <div className="w-full mt-12 flex justify-center gap-10">
+        <a
+          href="https://www.linkedin.com/in/asliaydin0"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white text-5xl hover:text-[#0e76a8] transition-transform duration-300 transform hover:scale-110"
+        >
+          <FaLinkedin />
+        </a>
+        <a
+          href="https://www.instagram.com/asliaydn_w"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white text-5xl hover:text-pink-500 transition-transform duration-300 transform hover:scale-110"
+        >
+          <FaInstagram />
+        </a>
+        <a
+          href="https://twitter.com/Aslaydn0"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white text-5xl hover:text-sky-400 transition-transform duration-300 transform hover:scale-110"
+        >
+          <FaTwitter />
+        </a>
+        <a
+          href="https://github.com/asliaydin0"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white text-5xl hover:text-gray-900 transition-transform duration-300 transform hover:scale-110"
+        >
+          <FaGithub />
+        </a>
       </div>
     </>
   );
