@@ -85,9 +85,7 @@ const ExperienceCard = ({ experience }) => {
         boxShadow: iconStyle.shadow,
       }}
       icon={
-        <div className="flex justify-center items-center w-full h-full">
-          <Icon className="w-[42%] h-[42%] text-white" aria-hidden />
-        </div>
+        <Icon className="experience-timeline-icon text-white" aria-hidden />
       }
     >
       <div>

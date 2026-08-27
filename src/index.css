@@ -19,6 +19,33 @@
   display: block;
 }
 
+/* react-vertical-timeline: react-icons ile varsayılan svg konumu çakışmasın */
+.vertical-timeline-element-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.vertical-timeline-element-icon svg,
+.vertical-timeline-element-icon .experience-timeline-icon {
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  margin: 0 !important;
+  width: 22px !important;
+  height: 22px !important;
+  display: block !important;
+  flex-shrink: 0;
+}
+
+@media only screen and (min-width: 1170px) {
+  .vertical-timeline-element-icon svg,
+  .vertical-timeline-element-icon .experience-timeline-icon {
+    width: 26px !important;
+    height: 26px !important;
+  }
+}
+
 .black-gradient {
   background: #000000; /* fallback for old browsers */
   background: -webkit-linear-gradient(
