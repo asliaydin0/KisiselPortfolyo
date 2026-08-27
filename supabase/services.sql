@@ -17,10 +17,16 @@ CREATE TABLE IF NOT EXISTS public.services (
   baslik      TEXT NOT NULL,
   aciklama    TEXT,
   ikon        TEXT NOT NULL DEFAULT 'web',
+  gorsel_url  TEXT,
+  ozellikler  TEXT[] DEFAULT '{}',
   sira        INTEGER NOT NULL DEFAULT 0,
   created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Mevcut tabloya yeni sütunlar (daha önce oluşturduysanız)
+ALTER TABLE public.services ADD COLUMN IF NOT EXISTS gorsel_url TEXT;
+ALTER TABLE public.services ADD COLUMN IF NOT EXISTS ozellikler TEXT[] DEFAULT '{}';
 
 DROP TRIGGER IF EXISTS services_updated_at ON public.services;
 CREATE TRIGGER services_updated_at
@@ -41,14 +47,14 @@ CREATE POLICY "services_authenticated_all"
   WITH CHECK (auth.role() = 'authenticated');
 
 -- Örnek hizmetler (tablo boşsa bir kez çalıştırın)
-INSERT INTO public.services (baslik, aciklama, ikon, sira)
-SELECT v.baslik, v.aciklama, v.ikon, v.sira
+INSERT INTO public.services (baslik, aciklama, ikon, ozellikler, sira)
+SELECT v.baslik, v.aciklama, v.ikon, v.ozellikler, v.sira
 FROM (VALUES
-  ('Web Sitesi Yapımı', 'Kurumsal, kişisel ve e-ticaret siteleri; modern, hızlı ve mobil uyumlu.', 'web', 1),
-  ('QR Menü Tasarımı', 'Restoran ve kafeler için dijital menü ve QR kod entegrasyonu.', 'qr-menu', 2),
-  ('Mobil Uygulama Yapımı', 'iOS ve Android için kullanıcı dostu native ve cross-platform uygulamalar.', 'mobile', 3),
-  ('Dijital Davetiye', 'Düğün, nişan ve etkinlikler için özelleştirilebilir dijital davetiyeler.', 'invitation', 4),
-  ('Dijital Albüm Sistemi', 'Fotoğraf ve anılarınızı paylaşabileceğiniz online albüm platformları.', 'album', 5),
-  ('Kartvizit Tasarımı', 'Basılı ve dijital kartvizitler; markanıza uygun profesyonel tasarım.', 'business-card', 6)
-) AS v(baslik, aciklama, ikon, sira)
+  ('Web Sitesi Yapımı', 'Kurumsal, kişisel ve e-ticaret siteleri; modern, hızlı ve mobil uyumlu arayüzler.', 'web', ARRAY['Responsive', 'SEO Uyumlu', 'Hızlı Yükleme'], 1),
+  ('QR Menü Tasarımı', 'Restoran ve kafeler için şık dijital menüler ve anında güncellenebilir QR kod sistemi.', 'qr-menu', ARRAY['QR Kod', 'Kolay Güncelleme', 'Mobil Menü'], 2),
+  ('Mobil Uygulama Yapımı', 'iOS ve Android için kullanıcı dostu, performanslı cross-platform uygulamalar.', 'mobile', ARRAY['Cross-Platform', 'Native Hissi', 'App Store'], 3),
+  ('Dijital Davetiye', 'Düğün, nişan ve etkinlikler için animasyonlu, kişiselleştirilebilir dijital davetiyeler.', 'invitation', ARRAY['RSVP', 'Konum Haritası', 'Fotoğraf Galerisi'], 4),
+  ('Dijital Albüm Sistemi', 'Düğün ve etkinlik anılarınızı misafirlerinizle paylaşabileceğiniz online albüm platformu.', 'album', ARRAY['Fotoğraf Paylaşımı', 'Güvenli Erişim', 'Sınırsız Yükleme'], 5),
+  ('Kartvizit Tasarımı', 'Basılı ve dijital kartvizitler; markanıza uygun profesyonel ve akılda kalıcı tasarım.', 'business-card', ARRAY['Baskıya Hazır', 'Dijital Versiyon', 'Marka Uyumu'], 6)
+) AS v(baslik, aciklama, ikon, ozellikler, sira)
 WHERE NOT EXISTS (SELECT 1 FROM public.services LIMIT 1);

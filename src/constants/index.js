@@ -76,48 +76,60 @@ const offeredServices = [
     id: "fallback-1",
     baslik: "Web Sitesi Yapımı",
     aciklama:
-      "Kurumsal, kişisel ve e-ticaret siteleri; modern, hızlı ve mobil uyumlu.",
+      "Kurumsal, kişisel ve e-ticaret siteleri; modern, hızlı ve mobil uyumlu arayüzler.",
     ikon: "web",
+    gorsel_url: null,
+    ozellikler: ["Responsive", "SEO Uyumlu", "Hızlı Yükleme"],
     sira: 1,
   },
   {
     id: "fallback-2",
     baslik: "QR Menü Tasarımı",
     aciklama:
-      "Restoran ve kafeler için dijital menü ve QR kod entegrasyonu.",
+      "Restoran ve kafeler için şık dijital menüler ve anında güncellenebilir QR kod sistemi.",
     ikon: "qr-menu",
+    gorsel_url: null,
+    ozellikler: ["QR Kod", "Kolay Güncelleme", "Mobil Menü"],
     sira: 2,
   },
   {
     id: "fallback-3",
     baslik: "Mobil Uygulama Yapımı",
     aciklama:
-      "iOS ve Android için kullanıcı dostu cross-platform uygulamalar.",
+      "iOS ve Android için kullanıcı dostu, performanslı cross-platform uygulamalar.",
     ikon: "mobile",
+    gorsel_url: null,
+    ozellikler: ["Cross-Platform", "Native Hissi", "App Store"],
     sira: 3,
   },
   {
     id: "fallback-4",
     baslik: "Dijital Davetiye",
     aciklama:
-      "Düğün, nişan ve etkinlikler için özelleştirilebilir dijital davetiyeler.",
+      "Düğün, nişan ve etkinlikler için animasyonlu, kişiselleştirilebilir dijital davetiyeler.",
     ikon: "invitation",
+    gorsel_url: null,
+    ozellikler: ["RSVP", "Konum Haritası", "Fotoğraf Galerisi"],
     sira: 4,
   },
   {
     id: "fallback-5",
     baslik: "Dijital Albüm Sistemi",
     aciklama:
-      "Fotoğraf ve anılarınızı paylaşabileceğiniz online albüm platformları.",
+      "Düğün ve etkinlik anılarınızı misafirlerinizle paylaşabileceğiniz online albüm platformu.",
     ikon: "album",
+    gorsel_url: null,
+    ozellikler: ["Fotoğraf Paylaşımı", "Güvenli Erişim", "Sınırsız Yükleme"],
     sira: 5,
   },
   {
     id: "fallback-6",
     baslik: "Kartvizit Tasarımı",
     aciklama:
-      "Basılı ve dijital kartvizitler; markanıza uygun profesyonel tasarım.",
+      "Basılı ve dijital kartvizitler; markanıza uygun profesyonel ve akılda kalıcı tasarım.",
     ikon: "business-card",
+    gorsel_url: null,
+    ozellikler: ["Baskıya Hazır", "Dijital Versiyon", "Marka Uyumu"],
     sira: 6,
   },
 ];

@@ -110,11 +110,11 @@ const Experience = () => {
       const { data, error: fetchError } = await client
         .from("experiences")
         .select("*")
-        .order("baslangic_tarihi", { ascending: false, nullsFirst: false });
+        .order("baslangic_tarihi", { ascending: true, nullsFirst: false });
 
       if (fetchError) throw fetchError;
 
-      setExperiences((data || []).map(mapExperience));
+      setExperiences((data || []).map((row, index) => mapExperience(row, index)));
     } catch (err) {
       console.error("Deneyimler yüklenirken hata:", err);
       setError(formatSupabaseError(err));

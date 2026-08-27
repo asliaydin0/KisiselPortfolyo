@@ -44,7 +44,7 @@ const AdminExperiences = () => {
     const { data, error } = await supabase
       .from("experiences")
       .select("*")
-      .order("baslangic_tarihi", { ascending: false });
+      .order("baslangic_tarihi", { ascending: true });
 
     if (error) {
       toast.error("Deneyimler yüklenemedi: " + error.message);
