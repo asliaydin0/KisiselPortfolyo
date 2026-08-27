@@ -93,7 +93,7 @@ const Services = () => {
 
       <motion.p
         variants={fadeIn("", "", 0.1, 1)}
-        className="relative mt-4 text-secondary text-[14px] sm:text-[17px] max-w-3xl mx-auto sm:mx-0 text-center sm:text-left leading-relaxed sm:leading-[30px]"
+        className="relative mt-4 text-secondary text-[14px] sm:text-[17px] max-w-3xl mx-auto text-center leading-relaxed sm:leading-[30px]"
       >
         <span className="sm:hidden">Markanıza özel dijital çözümler.</span>
         <span className="hidden sm:inline">
@@ -104,7 +104,7 @@ const Services = () => {
 
       <motion.div
         variants={fadeIn("up", "spring", 0.15, 0.7)}
-        className="hidden sm:grid relative mt-8 grid-cols-3 gap-3 sm:gap-6 max-w-xl mx-auto sm:mx-0"
+        className="hidden sm:grid relative mt-8 grid-cols-3 gap-3 sm:gap-6 max-w-xl mx-auto"
       >
         {HIGHLIGHT_STATS.map((stat) => (
           <div
@@ -166,7 +166,7 @@ const Services = () => {
             variants={fadeIn("up", "spring", 0.35, 0.75)}
             className="relative mt-14 p-6 sm:p-8 rounded-2xl overflow-hidden border border-[#915EFF]/25 bg-gradient-to-br from-[#915EFF]/15 via-tertiary/80 to-[#00cea8]/10"
           >
-            <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5 text-center sm:text-left">
+            <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5 text-center">
               <div>
                 <h3 className="text-white font-bold text-lg sm:text-xl">
                   Projeniz için doğru çözümü birlikte bulalım

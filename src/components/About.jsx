@@ -10,9 +10,9 @@ import { fadeIn, textVariant } from "../utils/motion";
 const ServiceCard = ({ index, title, icon }) => (
   <motion.div
     variants={fadeIn("up", "spring", index * 0.08, 0.5)}
-    className="w-full"
+    className="w-full sm:w-[250px] sm:shrink-0"
   >
-    <Tilt className="hidden sm:block xs:w-[250px] w-full">
+    <Tilt className="hidden sm:block w-[250px]">
       <motion.div
         variants={fadeIn("right", "spring", index * 0.5, 0.75)}
         className="w-full green-pink-gradient p-[1px] rounded-[20px] shadow-card"
@@ -72,7 +72,7 @@ const About = () => {
         </span>
       </motion.p>
 
-      <div className="mt-8 sm:mt-20 grid grid-cols-2 sm:flex sm:flex-wrap gap-3 sm:gap-10">
+      <div className="mt-8 sm:mt-20 grid grid-cols-2 sm:flex sm:flex-wrap sm:gap-10 gap-3">
         {services.map((service, index) => (
           <ServiceCard key={service.title} index={index} {...service} />
         ))}
