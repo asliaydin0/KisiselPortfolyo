@@ -15,7 +15,6 @@ const mapSkillRow = (row) => ({
   id: row.id,
   name: row.yetenek_adi ?? "",
   icon: getSkillIcon(row.yetenek_adi),
-  seviye: row.seviye ?? 0,
 });
 
 const Tech = () => {
@@ -45,7 +44,6 @@ const Tech = () => {
           id: `fallback-${index}`,
           name: tech.name ?? "",
           icon: tech.icon,
-          seviye: 80,
         }))
       );
     } finally {
@@ -76,7 +74,7 @@ const Tech = () => {
             </div>
           ) : (
             <div
-              className={`mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 ${
+              className={`mt-8 flex flex-wrap justify-center gap-x-5 gap-y-6 sm:gap-x-6 sm:gap-y-7 max-w-4xl mx-auto ${
                 error ? "opacity-90" : ""
               }`}
             >
@@ -85,7 +83,6 @@ const Tech = () => {
                   key={skill.id}
                   icon={skill.icon}
                   name={skill.name}
-                  seviye={skill.seviye}
                   index={index}
                 />
               ))}
