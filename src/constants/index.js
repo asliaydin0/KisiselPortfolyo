@@ -31,6 +31,10 @@ export const navLinks = [
     title: "Hakkımda",
   },
   {
+    id: "services",
+    title: "Hizmetler",
+  },
+  {
     id: "work",
     title: "Deneyimler",
   },
@@ -64,6 +68,57 @@ const services = [
   {
     title: "Frontend Developer",
     icon: creator,
+  },
+];
+
+const offeredServices = [
+  {
+    id: "fallback-1",
+    baslik: "Web Sitesi Yapımı",
+    aciklama:
+      "Kurumsal, kişisel ve e-ticaret siteleri; modern, hızlı ve mobil uyumlu.",
+    ikon: "web",
+    sira: 1,
+  },
+  {
+    id: "fallback-2",
+    baslik: "QR Menü Tasarımı",
+    aciklama:
+      "Restoran ve kafeler için dijital menü ve QR kod entegrasyonu.",
+    ikon: "qr-menu",
+    sira: 2,
+  },
+  {
+    id: "fallback-3",
+    baslik: "Mobil Uygulama Yapımı",
+    aciklama:
+      "iOS ve Android için kullanıcı dostu cross-platform uygulamalar.",
+    ikon: "mobile",
+    sira: 3,
+  },
+  {
+    id: "fallback-4",
+    baslik: "Dijital Davetiye",
+    aciklama:
+      "Düğün, nişan ve etkinlikler için özelleştirilebilir dijital davetiyeler.",
+    ikon: "invitation",
+    sira: 4,
+  },
+  {
+    id: "fallback-5",
+    baslik: "Dijital Albüm Sistemi",
+    aciklama:
+      "Fotoğraf ve anılarınızı paylaşabileceğiniz online albüm platformları.",
+    ikon: "album",
+    sira: 5,
+  },
+  {
+    id: "fallback-6",
+    baslik: "Kartvizit Tasarımı",
+    aciklama:
+      "Basılı ve dijital kartvizitler; markanıza uygun profesyonel tasarım.",
+    ikon: "business-card",
+    sira: 6,
   },
 ];
 
@@ -269,4 +324,4 @@ const projects = [
   },
 ];
 
-export { services, technologies, experiences, testimonials, projects };
+export { services, offeredServices, technologies, experiences, testimonials, projects };

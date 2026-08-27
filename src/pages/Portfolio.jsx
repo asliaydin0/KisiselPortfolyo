@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
-import { About, Contact, Experience, Feedbacks, Hero, Navbar, Tech, Works } from "../components";
+import { About, Contact, Experience, Feedbacks, Hero, Navbar, Services, Tech, Works } from "../components";
 import { SiteSettingsProvider } from "../context/SiteSettingsContext";
 import ErrorBoundary from "../components/ErrorBoundary";
 
@@ -51,6 +51,7 @@ const Portfolio = () => {
           <Hero />
         </div>
         <About />
+        <Services />
         <Experience />
         <Tech />
         <Works />

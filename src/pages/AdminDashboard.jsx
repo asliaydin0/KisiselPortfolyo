@@ -5,6 +5,7 @@ import { supabase } from '../config/supabaseClient';
 import AdminProjects from './admin/AdminProjects';
 import AdminExperiences from './admin/AdminExperiences';
 import AdminSkills from './admin/AdminSkills';
+import AdminServices from './admin/AdminServices';
 import AdminSettings from './admin/AdminSettings';
 
 const NAV_ITEMS = [
@@ -13,6 +14,7 @@ const NAV_ITEMS = [
   { id: 'projects', label: 'Projeleri Yönet', icon: '📁' },
   { id: 'experience', label: 'Deneyimleri Yönet', icon: '💼' },
   { id: 'skills', label: 'Yetenekleri Yönet', icon: '🛠' },
+  { id: 'services', label: 'Hizmetleri Yönet', icon: '✨' },
 ];
 
 const TAB_META = {
@@ -36,26 +38,32 @@ const TAB_META = {
     title: 'Yetenekler',
     subtitle: 'Teknik yeteneklerinizi yönetin.',
   },
+  services: {
+    title: 'Hizmetler',
+    subtitle: 'Sunduğunuz hizmetleri yönetin.',
+  },
 };
 
 const AdminDashboard = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [counts, setCounts] = useState({ projects: 0, experiences: 0, skills: 0 });
+  const [counts, setCounts] = useState({ projects: 0, experiences: 0, skills: 0, services: 0 });
   const navigate = useNavigate();
 
   const fetchCounts = useCallback(async () => {
-    const [projectsRes, experiencesRes, skillsRes] = await Promise.all([
+    const [projectsRes, experiencesRes, skillsRes, servicesRes] = await Promise.all([
       supabase.from('projects').select('*', { count: 'exact', head: true }),
       supabase.from('experiences').select('*', { count: 'exact', head: true }),
       supabase.from('skills').select('*', { count: 'exact', head: true }),
+      supabase.from('services').select('*', { count: 'exact', head: true }),
     ]);
 
     setCounts({
       projects: projectsRes.count ?? 0,
       experiences: experiencesRes.count ?? 0,
       skills: skillsRes.count ?? 0,
+      services: servicesRes.count ?? 0,
     });
   }, []);
 
@@ -98,10 +106,12 @@ const AdminDashboard = () => {
         return <AdminExperiences />;
       case 'skills':
         return <AdminSkills />;
+      case 'services':
+        return <AdminServices />;
       default:
         return (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
               <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-sm text-[#dfd9ff] font-medium uppercase tracking-wider">Projeler</span>
@@ -128,6 +138,15 @@ const AdminDashboard = () => {
                 <p className="text-4xl font-extrabold text-emerald-400">{counts.skills}</p>
                 <p className="text-xs text-[#dfd9ff]/60 mt-2">Supabase veritabanından</p>
               </div>
+
+              <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-sm text-[#dfd9ff] font-medium uppercase tracking-wider">Hizmetler</span>
+                  <span className="text-2xl">✨</span>
+                </div>
+                <p className="text-4xl font-extrabold text-amber-400">{counts.services}</p>
+                <p className="text-xs text-[#dfd9ff]/60 mt-2">Supabase veritabanından</p>
+              </div>
             </div>
 
             <section className="p-8 rounded-2xl bg-white/5 border border-white/10">
@@ -138,7 +157,8 @@ const AdminDashboard = () => {
                 <p>
                   Sol menüden <strong className="text-white">Projeleri Yönet</strong>,{' '}
                   <strong className="text-white">Deneyimleri Yönet</strong> veya{' '}
-                  <strong className="text-white">Yetenekleri Yönet</strong> sekmelerine giderek
+                  <strong className="text-white">Yetenekleri Yönet</strong> veya{' '}
+                  <strong className="text-white">Hizmetleri Yönet</strong> sekmelerine giderek
                   içeriklerinizi ekleyebilirsiniz.
                 </p>
                 <p>
