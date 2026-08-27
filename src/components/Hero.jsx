@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { styles } from "../styles";
 import ComputersCanvas from "./canvas/Computers";
@@ -9,13 +9,31 @@ const Hero = () => {
   const { settings } = useSiteSettings();
   const { prefix, highlight } = renderHeroTitle(settings.hero_title);
   const subtitleLines = (settings.hero_subtitle || "").split("\n");
+  const sectionRef = useRef(null);
+  const [canvasActive, setCanvasActive] = useState(true);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setCanvasActive(entry.isIntersecting);
+      },
+      { threshold: 0.05 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <section className="relative w-full h-screen mx-auto">
+    <section ref={sectionRef} className="relative w-full h-screen mx-auto">
+      {/* Metin katmanı: tıklamalar canvas'a geçsin, sadece etkileşimli öğeler yakalasın */}
       <div
-        className={`absolute inset-0 top-[120px] max-w-7xl mx-auto ${styles.paddingX} flex flex-row justify-between items-start gap-5 z-10`}
+        className={`absolute inset-0 top-[120px] max-w-7xl mx-auto ${styles.paddingX} flex flex-row justify-between items-start gap-5 z-10 pointer-events-none`}
       >
-        <div className="flex flex-row gap-5">
+        <div className="flex flex-row gap-5 pointer-events-none">
           <div className="flex flex-col justify-center items-center mt-5">
             <div className="w-5 h-5 rounded-full bg-[#915EFF]" />
             <div className="w-1 sm:h-80 h-40 violet-gradient" />
@@ -40,7 +58,7 @@ const Hero = () => {
         <motion.div
           whileHover={{ scale: 1.05, rotate: 5 }}
           transition={{ type: "spring", stiffness: 300 }}
-          className="mt-10 sm:mt-0 mr-0"
+          className="mt-10 sm:mt-0 mr-0 pointer-events-auto"
         >
           {settings.profile_img_url ? (
             <img
@@ -56,8 +74,8 @@ const Hero = () => {
         </motion.div>
       </div>
 
-      <div className="absolute xs:bottom-1 bottom-10 w-full flex justify-center items-center z-10">
-        <a href="#about">
+      <div className="absolute xs:bottom-1 bottom-10 w-full flex justify-center items-center z-10 pointer-events-none">
+        <a href="#about" className="pointer-events-auto">
           <div className="w-[35px] h-[64px] rounded-3xl border-4 border-secondary flex justify-center items-start p-2">
             <motion.div
               animate={{ y: [0, 24, 0] }}
@@ -74,7 +92,7 @@ const Hero = () => {
 
       <div className="absolute inset-0 z-0">
         <ErrorBoundary message="3D bilgisayar modeli yüklenemedi.">
-          <ComputersCanvas />
+          <ComputersCanvas frameloop={canvasActive ? "always" : "never"} />
         </ErrorBoundary>
       </div>
     </section>

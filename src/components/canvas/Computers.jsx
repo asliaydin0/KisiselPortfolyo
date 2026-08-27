@@ -34,7 +34,7 @@ const Computers = memo(({ isMobile }) => {
 
 Computers.displayName = "Computers";
 
-const ComputersCanvas = memo(() => {
+const ComputersCanvas = memo(({ frameloop = "always" }) => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -55,6 +55,7 @@ const ComputersCanvas = memo(() => {
   return (
     <Canvas
       {...webglCanvasProps}
+      frameloop={frameloop}
       dpr={isMobile ? [1, 1] : [1, 1.5]}
       shadows
       camera={{ position: [20, 3, 5], fov: 25 }}
@@ -63,6 +64,8 @@ const ComputersCanvas = memo(() => {
     >
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls
+          autoRotate
+          autoRotateSpeed={0.8}
           enableZoom={false}
           maxPolarAngle={Math.PI / 2}
           minPolarAngle={Math.PI / 2}
