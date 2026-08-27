@@ -4,6 +4,12 @@ import { FiEdit2, FiTrash2, FiPlus } from "react-icons/fi";
 import { supabase } from "../../config/supabaseClient";
 import ConfirmDialog from "../../components/admin/ConfirmDialog";
 import {
+  EXPERIENCE_ICON_OPTIONS,
+  getExperienceIcon,
+  getExperienceIconStyle,
+  guessExperienceIcon,
+} from "../../utils/experienceIcons";
+import {
   adminInputClass,
   adminLabelClass,
   adminCardClass,
@@ -18,6 +24,7 @@ const emptyForm = {
   baslangic_tarihi: "",
   bitis_tarihi: "",
   aciklama: "",
+  ikon: "work",
 };
 
 const formatDate = (dateStr) => {
@@ -78,6 +85,7 @@ const AdminExperiences = () => {
       baslangic_tarihi: exp.baslangic_tarihi || "",
       bitis_tarihi: exp.bitis_tarihi || "",
       aciklama: exp.aciklama || "",
+      ikon: exp.ikon || guessExperienceIcon(exp.pozisyon, exp.sirket_adi),
     });
     setDevamEdiyor(!exp.bitis_tarihi);
     setShowForm(true);
@@ -108,6 +116,7 @@ const AdminExperiences = () => {
         baslangic_tarihi: form.baslangic_tarihi || null,
         bitis_tarihi: devamEdiyor ? null : form.bitis_tarihi || null,
         aciklama: (form.aciklama ?? "").trim() || null,
+        ikon: form.ikon || guessExperienceIcon(form.pozisyon, form.sirket_adi),
       };
 
       if (editingId) {
@@ -154,6 +163,9 @@ const AdminExperiences = () => {
       setDeleting(false);
     }
   };
+
+  const PreviewIcon = getExperienceIcon(form.ikon);
+  const previewStyle = getExperienceIconStyle(form.ikon);
 
   return (
     <div className="space-y-6">
@@ -253,6 +265,36 @@ const AdminExperiences = () => {
                 className={adminInputClass}
               />
             </div>
+
+            <div className="md:col-span-2">
+              <label className={adminLabelClass}>İkon</label>
+              <select
+                name="ikon"
+                value={form.ikon}
+                onChange={handleChange}
+                className={adminInputClass}
+              >
+                {EXPERIENCE_ICON_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              <div className="mt-3 flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 w-fit">
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-white"
+                  style={{
+                    background: previewStyle.bg,
+                    boxShadow: previewStyle.shadow,
+                  }}
+                >
+                  <PreviewIcon className="w-4 h-4" />
+                </div>
+                <span className="text-xs text-[#dfd9ff]/70">
+                  Zaman çizelgesinde görünecek ikon
+                </span>
+              </div>
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-3 pt-2">
@@ -293,10 +335,25 @@ const AdminExperiences = () => {
         </div>
       ) : (
         <div className="space-y-4">
-          {experiences.map((exp) => (
+          {experiences.map((exp) => {
+            const iconKey = exp.ikon || guessExperienceIcon(exp.pozisyon, exp.sirket_adi);
+            const ExpIcon = getExperienceIcon(iconKey);
+            const iconStyle = getExperienceIconStyle(iconKey);
+
+            return (
             <div key={exp.id} className={adminCardClass}>
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                <div className="flex-1">
+                <div className="flex gap-4 flex-1">
+                  <div
+                    className="w-11 h-11 rounded-full flex items-center justify-center text-white shrink-0 mt-0.5"
+                    style={{
+                      background: iconStyle.bg,
+                      boxShadow: iconStyle.shadow,
+                    }}
+                  >
+                    <ExpIcon className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <h4 className="font-bold text-white text-lg">{exp.pozisyon}</h4>
                     <span className="text-xs px-2 py-0.5 rounded-full bg-[#3b82f6]/20 text-[#93c5fd]">
@@ -312,6 +369,7 @@ const AdminExperiences = () => {
                       {exp.aciklama}
                     </p>
                   )}
+                  </div>
                 </div>
                 <div className="flex gap-2 shrink-0">
                   <button
@@ -331,7 +389,8 @@ const AdminExperiences = () => {
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

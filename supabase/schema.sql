@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS public.experiences (
   baslangic_tarihi DATE,
   bitis_tarihi     DATE,
   aciklama         TEXT,
+  ikon             TEXT DEFAULT 'work',
   created_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at       TIMESTAMPTZ NOT NULL DEFAULT now()
 );

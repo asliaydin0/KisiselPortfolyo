@@ -193,8 +193,7 @@ const experiences = [
   {
     title: "Bilgisayar Teknolojisi ve Bilişim Sistemleri Bölümü",
     company_name: "Eğitim",
-    icon: starbucks,
-    iconBg: "#383E56",
+    iconKey: "education",
     date: "2 Ekim 2023",
     points: [
       "Barın Üniversitesinde eğitimime başladım.",
@@ -206,8 +205,7 @@ const experiences = [
   {
     title: "Blockchain ve Yazılım Kulüpleri",
     company_name: "Kulüp",
-    icon: tesla,
-    iconBg: "#E6DEDD",
+    iconKey: "club",
     date: "2024",
     points: [
       "Üniversite bünyesindeki teknik kulüplere aktif olarak katıldım. Bu kulüplerde:",
@@ -219,8 +217,7 @@ const experiences = [
   {
     title: "Online Eğitim ve Mentorluk",
     company_name: "Yapay Zeka ve Teknoloji Akademisi",
-    icon: shopify,
-    iconBg: "#383E56",
+    iconKey: "ai",
     date: "2024 - Devam Ediyor",
     points: [
       "Yapay zekâ, makine öğrenimi ve veri bilimine olan ilgim doğrultusunda Yapay Zekâ ve Teknoloji Akademisi'ne katıldım. Bu kapsamda:",
@@ -232,8 +229,7 @@ const experiences = [
   {
     title: "Yarışma ve Etkinliklere Katılım",
     company_name: "Bootcamp, Hackathon ve Proje Yarışmaları",
-    icon: meta,
-    iconBg: "#E6DEDD",
+    iconKey: "hackathon",
     date: "2024 - Devam Ediyor",
     points: [
       "Jam Etkinlikleri: Belirli süre içinde ürün geliştirme odaklı yarışmalarda ekipler halinde çalışarak proje yönetimi ve hızlı geliştirme yeteneklerimi test ettim.",

@@ -8,16 +8,17 @@ import { motion } from "framer-motion";
 import "react-vertical-timeline-component/style.min.css";
 
 import { styles } from "../styles";
-import { starbucks, tesla, shopify, meta } from "../assets";
 import { SectionWrapper } from "../hoc";
 import { textVariant } from "../utils/motion";
 import { formatSupabaseError, assertSupabaseClient } from "../utils/supabaseHelpers";
+import {
+  getExperienceIcon,
+  getExperienceIconStyle,
+  resolveExperienceIconKey,
+} from "../utils/experienceIcons";
 import SectionLoader from "./SectionLoader";
 import DataFetchError from "./DataFetchError";
 import { experiences as fallbackExperiences } from "../constants";
-
-const COMPANY_ICONS = [starbucks, tesla, shopify, meta];
-const ICON_BGS = ["#383E56", "#E6DEDD", "#383E56", "#E6DEDD"];
 
 const formatDate = (dateStr) => {
   if (!dateStr) return "";
@@ -27,7 +28,7 @@ const formatDate = (dateStr) => {
   });
 };
 
-const mapExperience = (row, index) => {
+const mapExperience = (row) => {
   const start = formatDate(row.baslangic_tarihi);
   const end = row.bitis_tarihi ? formatDate(row.bitis_tarihi) : "Devam Ediyor";
   const date = start ? (end ? `${start} – ${end}` : start) : end;
@@ -39,18 +40,38 @@ const mapExperience = (row, index) => {
         .filter(Boolean)
     : [];
 
+  const iconKey = resolveExperienceIconKey(
+    row.ikon,
+    row.pozisyon,
+    row.sirket_adi
+  );
+
   return {
     id: row.id,
     title: row.pozisyon ?? "",
     company_name: row.sirket_adi ?? "",
     date,
     points,
-    icon: COMPANY_ICONS[index % COMPANY_ICONS.length],
-    iconBg: ICON_BGS[index % ICON_BGS.length],
+    iconKey,
+    Icon: getExperienceIcon(iconKey),
+    iconStyle: getExperienceIconStyle(iconKey),
   };
 };
 
+const mapFallbackExperience = (exp, index) => ({
+  id: exp.id || `fallback-${index}`,
+  title: exp.title ?? "",
+  company_name: exp.company_name ?? "",
+  date: exp.date ?? "",
+  points: exp.points ?? [],
+  iconKey: exp.iconKey || "work",
+  Icon: getExperienceIcon(exp.iconKey || "work"),
+  iconStyle: getExperienceIconStyle(exp.iconKey || "work"),
+});
+
 const ExperienceCard = ({ experience }) => {
+  const { Icon, iconStyle } = experience;
+
   return (
     <VerticalTimelineElement
       contentStyle={{
@@ -59,21 +80,20 @@ const ExperienceCard = ({ experience }) => {
       }}
       contentArrowStyle={{ borderRight: "7px solid  #232631" }}
       date={experience.date}
-      iconStyle={{ background: experience.iconBg }}
+      iconStyle={{
+        background: iconStyle.bg,
+        boxShadow: iconStyle.shadow,
+      }}
       icon={
-        <div className='flex justify-center items-center w-full h-full'>
-          <img
-            src={experience.icon}
-            alt={experience.company_name}
-            className='w-[60%] h-[60%] object-contain'
-          />
+        <div className="flex justify-center items-center w-full h-full">
+          <Icon className="w-[42%] h-[42%] text-white" aria-hidden />
         </div>
       }
     >
       <div>
-        <h3 className='text-white text-[24px] font-bold'>{experience.title}</h3>
+        <h3 className="text-white text-[24px] font-bold">{experience.title}</h3>
         <p
-          className='text-secondary text-[16px] font-semibold'
+          className="text-secondary text-[16px] font-semibold"
           style={{ margin: 0 }}
         >
           {experience.company_name}
@@ -81,11 +101,11 @@ const ExperienceCard = ({ experience }) => {
       </div>
 
       {experience.points.length > 0 && (
-        <ul className='mt-5 list-disc ml-5 space-y-2'>
+        <ul className="mt-5 list-disc ml-5 space-y-2">
           {experience.points.map((point, index) => (
             <li
               key={`experience-point-${experience.id}-${index}`}
-              className='text-white-100 text-[14px] pl-1 tracking-wider'
+              className="text-white-100 text-[14px] pl-1 tracking-wider"
             >
               {point}
             </li>
@@ -114,16 +134,11 @@ const Experience = () => {
 
       if (fetchError) throw fetchError;
 
-      setExperiences((data || []).map((row, index) => mapExperience(row, index)));
+      setExperiences((data || []).map(mapExperience));
     } catch (err) {
       console.error("Deneyimler yüklenirken hata:", err);
       setError(formatSupabaseError(err));
-      setExperiences(
-        fallbackExperiences.map((exp, index) => ({
-          ...exp,
-          id: `fallback-${index}`,
-        }))
-      );
+      setExperiences(fallbackExperiences.map(mapFallbackExperience));
     } finally {
       setLoading(false);
     }
