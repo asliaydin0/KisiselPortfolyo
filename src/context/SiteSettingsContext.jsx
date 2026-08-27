@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
 import { formatSupabaseError, assertSupabaseClient } from "../utils/supabaseHelpers";
 import { updateFavicon } from "../utils/updateFavicon";
+import { updateSocialMeta } from "../utils/updateSocialMeta";
+import { getShareImageUrl, withShareImageVersion } from "../utils/shareImage";
 
 export const SETTINGS_ID = 1;
 
@@ -58,8 +60,19 @@ export const SiteSettingsProvider = ({ children }) => {
   }, [fetchSettings]);
 
   useEffect(() => {
-    updateFavicon(settings.logo_url || DEFAULT_SITE_SETTINGS.logo_url);
-  }, [settings.logo_url]);
+    const logoUrl = settings.logo_url || DEFAULT_SITE_SETTINGS.logo_url;
+    updateFavicon(logoUrl);
+
+    const shareImageUrl = withShareImageVersion(getShareImageUrl(), settings.updated_at);
+    const heroTitle = settings.hero_title || DEFAULT_SITE_SETTINGS.hero_title;
+    const heroSubtitle = settings.hero_subtitle || DEFAULT_SITE_SETTINGS.hero_subtitle;
+
+    updateSocialMeta({
+      title: `${heroTitle} | Kişisel Portföy`,
+      description: heroSubtitle.replace(/\n/g, " "),
+      imageUrl: shareImageUrl || logoUrl,
+    });
+  }, [settings.logo_url, settings.hero_title, settings.hero_subtitle, settings.updated_at]);
 
   const value = useMemo(
     () => ({ settings, loading, error, refetch: fetchSettings }),

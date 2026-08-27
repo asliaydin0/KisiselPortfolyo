@@ -4,6 +4,7 @@ import { FiUpload, FiSave } from "react-icons/fi";
 import { supabase } from "../../config/supabaseClient";
 import { SETTINGS_ID, DEFAULT_SITE_SETTINGS } from "../../context/SiteSettingsContext";
 import { updateFavicon } from "../../utils/updateFavicon";
+import { uploadShareImage } from "../../utils/shareImage";
 import ImageCropperModal from "../../components/admin/ImageCropperModal";
 import { validateImageFile } from "../../utils/cropImage";
 import {
@@ -79,6 +80,10 @@ const AdminSettings = () => {
       });
       setLogoPreview(data.logo_url || null);
       setProfilePreview(data.profile_img_url || null);
+
+      if (data.logo_url) {
+        uploadShareImage(data.logo_url).catch(() => {});
+      }
     } catch (err) {
       toast.error("Ayarlar yüklenemedi: " + err.message);
     } finally {
@@ -156,7 +161,9 @@ const AdminSettings = () => {
 
       if (error) throw error;
 
-      updateFavicon(form.logo_url || DEFAULT_SITE_SETTINGS.logo_url);
+      const logoUrl = form.logo_url || DEFAULT_SITE_SETTINGS.logo_url;
+      await uploadShareImage(logoUrl);
+      updateFavicon(logoUrl);
       toast.success("Genel ayarlar kaydedildi.", { id: toastId });
     } catch (err) {
       toast.error(err.message || "Kaydetme başarısız.", { id: toastId });

@@ -2,6 +2,9 @@
   command = "npm install --legacy-peer-deps && npm run build"
   publish = "dist"
 
+[[edge_functions]]
+  function = "share-meta"
+  path = "/*"
 
 [[redirects]]
   from = "/*"
