@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
 import { formatSupabaseError, assertSupabaseClient } from "../utils/supabaseHelpers";
+import { updateFavicon } from "../utils/updateFavicon";
 
 export const SETTINGS_ID = 1;
 
@@ -55,6 +56,10 @@ export const SiteSettingsProvider = ({ children }) => {
   useEffect(() => {
     fetchSettings();
   }, [fetchSettings]);
+
+  useEffect(() => {
+    updateFavicon(settings.logo_url || DEFAULT_SITE_SETTINGS.logo_url);
+  }, [settings.logo_url]);
 
   const value = useMemo(
     () => ({ settings, loading, error, refetch: fetchSettings }),

@@ -1,6 +1,5 @@
 import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { About, Contact, Experience, Feedbacks, Hero, Navbar, Services, Tech, Works } from "../components";
-import { SiteSettingsProvider } from "../context/SiteSettingsContext";
 import ErrorBoundary from "../components/ErrorBoundary";
 
 const StarsCanvas = lazy(() =>
@@ -44,8 +43,7 @@ const LazyStars = () => {
 
 const Portfolio = () => {
   return (
-    <SiteSettingsProvider>
-      <div className="relative z-0 bg-primary w-full overflow-x-hidden">
+    <div className="relative z-0 bg-primary w-full overflow-x-hidden">
         <div className="bg-hero-pattern bg-cover bg-no-repeat bg-center">
           <Navbar />
           <Hero />
@@ -61,7 +59,6 @@ const Portfolio = () => {
           <LazyStars />
         </div>
       </div>
-    </SiteSettingsProvider>
   );
 };
 

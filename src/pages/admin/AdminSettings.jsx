@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import toast from "react-hot-toast";
 import { FiUpload, FiSave } from "react-icons/fi";
 import { supabase } from "../../config/supabaseClient";
-import { SETTINGS_ID } from "../../context/SiteSettingsContext";
+import { SETTINGS_ID, DEFAULT_SITE_SETTINGS } from "../../context/SiteSettingsContext";
+import { updateFavicon } from "../../utils/updateFavicon";
 import ImageCropperModal from "../../components/admin/ImageCropperModal";
 import { validateImageFile } from "../../utils/cropImage";
 import {
@@ -155,6 +156,7 @@ const AdminSettings = () => {
 
       if (error) throw error;
 
+      updateFavicon(form.logo_url || DEFAULT_SITE_SETTINGS.logo_url);
       toast.success("Genel ayarlar kaydedildi.", { id: toastId });
     } catch (err) {
       toast.error(err.message || "Kaydetme başarısız.", { id: toastId });
