@@ -26,72 +26,71 @@ const mapProject = (row) => ({
   })),
 });
 
-const ProjectCard = ({
-  index,
-  name,
-  description,
-  tags,
-  image,
-  source_code_link,
-}) => {
-  return (
-    <motion.div variants={fadeIn("up", "spring", index * 0.5, 0.75)}>
-      <Tilt
-        options={{
-          max: 45,
-          scale: 1,
-          speed: 450,
-        }}
-        className='bg-tertiary p-4 sm:p-5 rounded-2xl w-full max-w-[360px] mx-auto sm:mx-0'
-      >
-        <div className='relative w-full h-[200px] sm:h-[230px]'>
-          {image ? (
-            <img
-              src={image}
-              alt={name}
-              className='w-full h-full object-cover rounded-2xl'
-            />
-          ) : (
-            <div className='w-full h-full rounded-2xl bg-primary/60 border border-white/10 flex items-center justify-center'>
-              <span className='text-4xl opacity-40'>📁</span>
-            </div>
-          )}
-
-          <div className='absolute inset-0 flex justify-end m-3 card-img_hover'>
-            {source_code_link && (
-              <div
-                onClick={() => window.open(source_code_link, "_blank")}
-                className='black-gradient w-11 h-11 rounded-full flex justify-center items-center cursor-pointer'
-              >
-                <img
-                  src={github}
-                  alt='source code'
-                  className='w-1/2 h-1/2 object-contain'
-                />
-              </div>
-            )}
-          </div>
+const ProjectCardInner = ({ name, description, tags, image, source_code_link, mobile = false }) => (
+  <>
+    <div className={`relative w-full ${mobile ? "h-[160px]" : "h-[200px] sm:h-[230px]"}`}>
+      {image ? (
+        <img src={image} alt={name} className="w-full h-full object-cover rounded-lg sm:rounded-2xl" />
+      ) : (
+        <div className="w-full h-full rounded-lg sm:rounded-2xl bg-primary/40 border border-white/[0.06] flex items-center justify-center">
+          <span className="text-2xl opacity-30">📁</span>
         </div>
-
-        <div className='mt-5'>
-          <h3 className='text-white font-bold text-[20px] sm:text-[24px]'>{name}</h3>
-          <p className='mt-2 text-secondary text-[13px] sm:text-[14px] leading-relaxed'>{description}</p>
+      )}
+      {source_code_link && (
+        <div className="absolute inset-0 flex justify-end m-2.5 sm:m-3">
+          <button
+            type="button"
+            onClick={() => window.open(source_code_link, "_blank")}
+            className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/60 backdrop-blur-sm border border-white/10 flex items-center justify-center"
+            aria-label="GitHub"
+          >
+            <img src={github} alt="" className="w-4 h-4 sm:w-5 sm:h-5 object-contain" />
+          </button>
         </div>
+      )}
+    </div>
+    <div className="mt-3 sm:mt-5">
+      <h3 className="text-white font-semibold text-[16px] sm:text-xl leading-snug">{name}</h3>
+      <p className="mt-1 text-secondary text-xs sm:text-sm leading-relaxed line-clamp-2 sm:line-clamp-none">
+        {description}
+      </p>
+    </div>
+    {tags.length > 0 && (
+      <div className="mt-2 sm:mt-3 flex flex-wrap gap-1.5">
+        {tags.slice(0, mobile ? 2 : tags.length).map((tag) => (
+          <span key={`${name}-${tag.name}`} className={`text-[11px] sm:text-sm ${tag.color}`}>
+            #{tag.name}
+          </span>
+        ))}
+      </div>
+    )}
+  </>
+);
 
-        <div className='mt-4 flex flex-wrap gap-2'>
-          {tags.map((tag) => (
-            <p
-              key={`${name}-${tag.name}`}
-              className={`text-[14px] ${tag.color}`}
-            >
-              #{tag.name}
-            </p>
-          ))}
-        </div>
-      </Tilt>
-    </motion.div>
-  );
-};
+const ProjectCard = ({ index, name, description, tags, image, source_code_link }) => (
+  <motion.div variants={fadeIn("up", "spring", index * 0.2, 0.5)} className="w-full max-w-[360px] mx-auto sm:mx-0">
+    <div className="sm:hidden bg-white/[0.03] border border-white/[0.06] rounded-xl p-3">
+      <ProjectCardInner
+        name={name}
+        description={description}
+        tags={tags}
+        image={image}
+        source_code_link={source_code_link}
+        mobile
+      />
+    </div>
+
+    <Tilt options={{ max: 12, scale: 1, speed: 400 }} className="hidden sm:block bg-white/[0.03] border border-white/[0.06] p-4 sm:p-5 rounded-xl">
+      <ProjectCardInner
+        name={name}
+        description={description}
+        tags={tags}
+        image={image}
+        source_code_link={source_code_link}
+      />
+    </Tilt>
+  </motion.div>
+);
 
 const Works = () => {
   const [projects, setProjects] = useState([]);
@@ -110,7 +109,6 @@ const Works = () => {
         .order("created_at", { ascending: false });
 
       if (fetchError) throw fetchError;
-
       setProjects((data || []).map(mapProject));
     } catch (err) {
       console.error("Projeler yüklenirken hata:", err);
@@ -140,22 +138,17 @@ const Works = () => {
   return (
     <>
       <motion.div variants={textVariant()}>
-        <p className={`${styles.sectionSubText} `}>KENDİ ÇALIŞMALARIM</p>
-        <h2 className={`${styles.sectionHeadText}`}>Projelerim</h2>
+        <p className={styles.sectionSubText}>Projeler</p>
+        <h2 className={`${styles.sectionHeadText} mt-1`}>Çalışmalarım</h2>
       </motion.div>
 
-      <div className='w-full flex'>
-        <motion.p
-          variants={fadeIn("", "", 0.1, 1)}
-          className='mt-3 text-secondary text-[15px] sm:text-[17px] max-w-3xl leading-[26px] sm:leading-[30px]'
-        >
-          Eğitim sürecimde ve kişisel çalışmalarımda geliştirdiğim çeşitli projelerle 
-          hem teknik becerilerimi hem de problem çözme yeteneklerimi pekiştirdim. 
-          Takım çalışmaları, freelance işler ve sosyal sorumluluk projeleri gibi farklı 
-          alanlarda edindiğim deneyimler, yazılım dünyasındaki yolculuğumu güçlendirdi. 
-          Burada, üzerinde çalıştığım bazı önemli projeleri bulabilirsiniz.
-        </motion.p>
-      </div>
+      <motion.p variants={fadeIn("", "", 0.1, 1)} className={`${styles.sectionLead} sm:max-w-3xl`}>
+        <span className="sm:hidden">Seçili projelerimden birkaçı.</span>
+        <span className="hidden sm:inline">
+          Eğitim sürecimde ve kişisel çalışmalarımda geliştirdiğim projelerle teknik becerilerimi
+          pekiştirdim. Burada öne çıkan çalışmalarımı bulabilirsiniz.
+        </span>
+      </motion.p>
 
       {loading ? (
         <SectionLoader label="Projeler yükleniyor..." />
@@ -163,14 +156,14 @@ const Works = () => {
         <>
           {error && <DataFetchError message={error} onRetry={fetchProjects} />}
           {projects.length > 0 ? (
-            <div className={`${error ? "mt-8" : "mt-12 sm:mt-20"} flex flex-wrap gap-5 sm:gap-7 justify-center sm:justify-start`}>
+            <div className={`${error ? "mt-6" : "mt-8 sm:mt-12"} flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:gap-6`}>
               {projects.map((project, index) => (
                 <ProjectCard key={project.id} index={index} {...project} />
               ))}
             </div>
           ) : (
             !error && (
-              <div className="mt-20 p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
+              <div className="mt-10 p-5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-center">
                 <p className="text-secondary text-sm">Henüz proje eklenmemiş.</p>
               </div>
             )

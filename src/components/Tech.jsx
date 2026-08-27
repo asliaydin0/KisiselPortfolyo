@@ -57,9 +57,9 @@ const Tech = () => {
 
   return (
     <>
-      <motion.div variants={textVariant()}>
-        <p className={`${styles.sectionSubText} text-center`}>TEKNOLOJİLER</p>
-        <h2 className={`${styles.sectionHeadText} text-center`}>Yeteneklerim</h2>
+      <motion.div variants={textVariant()} className="text-center">
+        <p className={styles.sectionSubText}>Yetenekler</p>
+        <h2 className={`${styles.sectionHeadText} mt-1`}>Teknolojiler</h2>
       </motion.div>
 
       {loading ? (
@@ -74,7 +74,7 @@ const Tech = () => {
             </div>
           ) : (
             <div
-              className={`mt-8 flex flex-wrap justify-center gap-x-5 gap-y-6 sm:gap-x-6 sm:gap-y-7 max-w-4xl mx-auto ${
+              className={`mt-6 sm:mt-8 flex flex-wrap justify-center gap-x-4 gap-y-5 sm:gap-x-6 sm:gap-y-7 max-w-4xl mx-auto ${
                 error ? "opacity-90" : ""
               }`}
             >
