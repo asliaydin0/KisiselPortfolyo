@@ -28,10 +28,10 @@ const Hero = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative w-full h-screen mx-auto">
+    <section ref={sectionRef} className="relative w-full min-h-[100svh] h-[100svh] sm:h-screen mx-auto">
       {/* Metin katmanı: tıklamalar canvas'a geçsin, sadece etkileşimli öğeler yakalasın */}
       <div
-        className={`absolute inset-0 top-[120px] max-w-7xl mx-auto ${styles.paddingX} flex flex-row justify-between items-start gap-5 z-10 pointer-events-none`}
+        className={`absolute inset-0 top-[76px] sm:top-[120px] max-w-7xl mx-auto ${styles.paddingX} flex flex-col sm:flex-row justify-between items-center sm:items-start gap-5 z-10 pointer-events-none`}
       >
         <div className="flex flex-row gap-5 pointer-events-none">
           <div className="flex flex-col justify-center items-center mt-5">
@@ -90,7 +90,7 @@ const Hero = () => {
         </a>
       </div>
 
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 opacity-50 sm:opacity-100 pointer-events-none touch-none">
         <ErrorBoundary message="3D bilgisayar modeli yüklenemedi.">
           <ComputersCanvas frameloop={canvasActive ? "always" : "never"} />
         </ErrorBoundary>
