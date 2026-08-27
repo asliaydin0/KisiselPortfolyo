@@ -91,7 +91,7 @@ const ServiceCard = memo(
 
               <a
                 href="#contact"
-                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#915EFF] hover:text-white transition-colors group/link w-fit"
+                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#915EFF] hover:text-white transition-colors group/link w-fit min-h-[44px] py-2"
               >
                 Teklif Al
                 <FiArrowUpRight className="transition-transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
@@ -129,7 +129,7 @@ const ServiceCard = memo(
             <div className="mt-auto pt-4 flex items-center justify-between">
               <a
                 href="#contact"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#915EFF] hover:text-white transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#915EFF] hover:text-white transition-colors min-h-[44px] py-2"
               >
                 İletişime Geç
                 <FiArrowUpRight size={14} />

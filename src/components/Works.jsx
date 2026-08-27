@@ -42,9 +42,9 @@ const ProjectCard = ({
           scale: 1,
           speed: 450,
         }}
-        className='bg-tertiary p-5 rounded-2xl sm:w-[360px] w-full'
+        className='bg-tertiary p-4 sm:p-5 rounded-2xl w-full max-w-[360px] mx-auto sm:mx-0'
       >
-        <div className='relative w-full h-[230px]'>
+        <div className='relative w-full h-[200px] sm:h-[230px]'>
           {image ? (
             <img
               src={image}
@@ -61,7 +61,7 @@ const ProjectCard = ({
             {source_code_link && (
               <div
                 onClick={() => window.open(source_code_link, "_blank")}
-                className='black-gradient w-10 h-10 rounded-full flex justify-center items-center cursor-pointer'
+                className='black-gradient w-11 h-11 rounded-full flex justify-center items-center cursor-pointer'
               >
                 <img
                   src={github}
@@ -74,8 +74,8 @@ const ProjectCard = ({
         </div>
 
         <div className='mt-5'>
-          <h3 className='text-white font-bold text-[24px]'>{name}</h3>
-          <p className='mt-2 text-secondary text-[14px]'>{description}</p>
+          <h3 className='text-white font-bold text-[20px] sm:text-[24px]'>{name}</h3>
+          <p className='mt-2 text-secondary text-[13px] sm:text-[14px] leading-relaxed'>{description}</p>
         </div>
 
         <div className='mt-4 flex flex-wrap gap-2'>
@@ -147,7 +147,7 @@ const Works = () => {
       <div className='w-full flex'>
         <motion.p
           variants={fadeIn("", "", 0.1, 1)}
-          className='mt-3 text-secondary text-[17px] max-w-3xl leading-[30px]'
+          className='mt-3 text-secondary text-[15px] sm:text-[17px] max-w-3xl leading-[26px] sm:leading-[30px]'
         >
           Eğitim sürecimde ve kişisel çalışmalarımda geliştirdiğim çeşitli projelerle 
           hem teknik becerilerimi hem de problem çözme yeteneklerimi pekiştirdim. 
@@ -163,7 +163,7 @@ const Works = () => {
         <>
           {error && <DataFetchError message={error} onRetry={fetchProjects} />}
           {projects.length > 0 ? (
-            <div className={`${error ? "mt-8" : "mt-20"} flex flex-wrap gap-7`}>
+            <div className={`${error ? "mt-8" : "mt-12 sm:mt-20"} flex flex-wrap gap-5 sm:gap-7 justify-center sm:justify-start`}>
               {projects.map((project, index) => (
                 <ProjectCard key={project.id} index={index} {...project} />
               ))}

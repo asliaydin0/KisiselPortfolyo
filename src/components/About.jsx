@@ -8,19 +8,12 @@ import { SectionWrapper } from "../hoc";
 import { fadeIn, textVariant } from "../utils/motion";
 
 const ServiceCard = ({ index, title, icon }) => (
-  <Tilt className='xs:w-[250px] w-full'>
+  <Tilt className="w-full sm:max-w-[250px]">
     <motion.div
       variants={fadeIn("right", "spring", index * 0.5, 0.75)}
-      className='w-full green-pink-gradient p-[1px] rounded-[20px] shadow-card'
+      className="w-full green-pink-gradient p-[1px] rounded-[20px] shadow-card"
     >
-      <div
-        options={{
-          max: 45,
-          scale: 1,
-          speed: 450,
-        }}
-        className='bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col'
-      >
+      <div className="bg-tertiary rounded-[20px] py-5 px-6 sm:px-12 min-h-[220px] sm:min-h-[280px] flex justify-evenly items-center flex-col">
         <img
           src={icon}
           alt='web-development'
@@ -38,7 +31,7 @@ const ServiceCard = ({ index, title, icon }) => (
 const About = () => {
   return (
     <>
-      <motion.div variants={textVariant()} className="flex items-center justify-between flex-wrap gap-4">
+      <motion.div variants={textVariant()} className="flex flex-col xs:flex-row xs:items-center justify-between flex-wrap gap-4">
         <div>
           <p className={styles.sectionSubText}>GİRİŞ</p>
           <h2 className={styles.sectionHeadText}>Hakkımda</h2>
@@ -48,7 +41,7 @@ const About = () => {
           href="/CV_AsliAydin.pdf"
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-[#915EFF] hover:bg-[#7b4de5] text-white px-6 py-3 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+          className="bg-[#915EFF] hover:bg-[#7b4de5] text-white px-6 py-3 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 w-full xs:w-auto text-center min-h-[44px] flex items-center justify-center"
         >
           CV'yi Görüntüle
         </a>
@@ -57,7 +50,7 @@ const About = () => {
 
       <motion.p
         variants={fadeIn("", "", 0.1, 1)}
-        className='mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]'
+        className='mt-4 text-secondary text-[15px] sm:text-[17px] max-w-3xl leading-[26px] sm:leading-[30px]'
       >
         Eğitim hayatım boyunca web geliştirme, yapay zeka ve mobil uygulama alanlarında çeşitli projeler 
         geliştirerek teknik becerilerimi geliştirdim. Freelance işler, takım çalışmaları ve sosyal sorumluluk 
@@ -66,7 +59,7 @@ const About = () => {
         biri olarak teknolojiyle değer katan projeler üretmeyi hedefliyorum.
       </motion.p>
 
-      <div className='mt-20 flex flex-wrap gap-10'>
+      <div className='mt-12 sm:mt-20 flex flex-wrap gap-6 sm:gap-10 justify-center sm:justify-start'>
         {services.map((service, index) => (
           <ServiceCard key={service.title} index={index} {...service} />
         ))}

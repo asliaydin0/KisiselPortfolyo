@@ -1,4 +1,4 @@
-import React, { Suspense, memo } from "react";
+import React, { Suspense, memo, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
 
@@ -16,10 +16,25 @@ const Earth = memo(() => {
 Earth.displayName = "Earth";
 
 const EarthCanvas = memo(() => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 639px)");
+    setIsMobile(mediaQuery.matches);
+
+    const handleMediaQueryChange = (event) => {
+      setIsMobile(event.matches);
+    };
+
+    mediaQuery.addEventListener("change", handleMediaQueryChange);
+    return () => mediaQuery.removeEventListener("change", handleMediaQueryChange);
+  }, []);
+
   return (
     <Canvas
       {...webglCanvasProps}
-      shadows
+      dpr={isMobile ? [1, 1] : [1, 1.5]}
+      shadows={!isMobile}
       camera={{
         fov: 45,
         near: 0.1,
@@ -29,7 +44,9 @@ const EarthCanvas = memo(() => {
     >
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls
-          autoRotate
+          autoRotate={!isMobile}
+          enableRotate={!isMobile}
+          enablePan={false}
           enableZoom={false}
           maxPolarAngle={Math.PI / 2}
           minPolarAngle={Math.PI / 2}

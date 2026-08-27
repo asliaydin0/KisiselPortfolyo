@@ -89,9 +89,9 @@ const ExperienceCard = ({ experience }) => {
       }
     >
       <div>
-        <h3 className="text-white text-[24px] font-bold">{experience.title}</h3>
+        <h3 className="text-white text-[18px] sm:text-[24px] font-bold">{experience.title}</h3>
         <p
-          className="text-secondary text-[16px] font-semibold"
+          className="text-secondary text-[14px] sm:text-[16px] font-semibold"
           style={{ margin: 0 }}
         >
           {experience.company_name}
@@ -165,7 +165,7 @@ const Experience = () => {
             <DataFetchError message={error} onRetry={fetchExperiences} />
           )}
           {experiences.length > 0 ? (
-            <div className={`${error ? "mt-8" : "mt-20"} flex flex-col`}>
+            <div className={`${error ? "mt-8" : "mt-12 sm:mt-20"} flex flex-col`}>
               <VerticalTimeline>
                 {experiences.map((experience) => (
                   <ExperienceCard

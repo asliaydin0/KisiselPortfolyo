@@ -93,7 +93,7 @@ const Services = () => {
 
       <motion.p
         variants={fadeIn("", "", 0.1, 1)}
-        className="relative mt-4 text-secondary text-[17px] max-w-3xl mx-auto text-center leading-[30px]"
+        className="relative mt-4 text-secondary text-[15px] sm:text-[17px] max-w-3xl mx-auto text-center leading-[26px] sm:leading-[30px] px-1"
       >
         Markanızı dijitale taşıyan, görsel olarak güçlü ve kullanıcı odaklı çözümler
         sunuyorum. Her projeye özel tasarım ve geliştirme ile fark yaratıyorum.
@@ -101,7 +101,7 @@ const Services = () => {
 
       <motion.div
         variants={fadeIn("up", "spring", 0.15, 0.7)}
-        className="relative mt-8 grid grid-cols-3 gap-3 sm:gap-6 max-w-xl mx-auto"
+        className="relative mt-8 grid grid-cols-1 xs:grid-cols-3 gap-3 sm:gap-6 max-w-xl mx-auto"
       >
         {HIGHLIGHT_STATS.map((stat) => (
           <div
@@ -109,7 +109,7 @@ const Services = () => {
             className="text-center p-3 sm:p-4 rounded-xl bg-white/[0.03] border border-white/[0.08]"
           >
             <p className="text-2xl sm:text-3xl font-extrabold text-white">{stat.value}</p>
-            <p className="text-[10px] sm:text-xs text-secondary mt-1">{stat.label}</p>
+            <p className="text-xs sm:text-sm text-secondary mt-1">{stat.label}</p>
           </div>
         ))}
       </motion.div>
@@ -174,7 +174,7 @@ const Services = () => {
               </div>
               <a
                 href="#contact"
-                className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-[#915EFF] hover:bg-[#7b4de5] text-white font-semibold text-sm transition-all duration-300 hover:scale-105 shadow-lg shadow-[#915EFF]/25 shrink-0"
+                className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-[#915EFF] hover:bg-[#7b4de5] text-white font-semibold text-sm transition-all duration-300 hover:scale-105 shadow-lg shadow-[#915EFF]/25 shrink-0 w-full sm:w-auto min-h-[48px]"
               >
                 Ücretsiz Teklif Al
               </a>

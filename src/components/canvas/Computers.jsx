@@ -18,7 +18,7 @@ const Computers = memo(({ isMobile }) => {
         angle={0.12}
         penumbra={1}
         intensity={1}
-        castShadow
+        castShadow={!isMobile}
         shadow-mapSize={isMobile ? 512 : 1024}
       />
       <pointLight intensity={1} />
@@ -38,7 +38,7 @@ const ComputersCanvas = memo(({ frameloop = "always" }) => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 500px)");
+    const mediaQuery = window.matchMedia("(max-width: 639px)");
     setIsMobile(mediaQuery.matches);
 
     const handleMediaQueryChange = (event) => {
@@ -57,15 +57,17 @@ const ComputersCanvas = memo(({ frameloop = "always" }) => {
       {...webglCanvasProps}
       frameloop={frameloop}
       dpr={isMobile ? [1, 1] : [1, 1.5]}
-      shadows
+      shadows={!isMobile}
       camera={{ position: [20, 3, 5], fov: 25 }}
       className="!absolute !inset-0 !w-full !h-full"
       style={{ background: "transparent" }}
     >
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls
-          autoRotate
+          autoRotate={!isMobile}
           autoRotateSpeed={0.8}
+          enableRotate={!isMobile}
+          enablePan={false}
           enableZoom={false}
           maxPolarAngle={Math.PI / 2}
           minPolarAngle={Math.PI / 2}
