@@ -47,6 +47,15 @@ export const isMissingTableError = (err) => {
   );
 };
 
+export const isMissingColumnError = (err, column) => {
+  const message = err?.message || String(err || "");
+  const col = column || "";
+  return (
+    message.includes("schema cache") &&
+    (col ? message.includes(`'${col}'`) || message.includes(col) : true)
+  );
+};
+
 export const assertSupabaseClient = () => {
   if (!supabase) {
     throw new Error(

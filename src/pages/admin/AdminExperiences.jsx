@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { FiEdit2, FiTrash2, FiPlus } from "react-icons/fi";
 import { supabase } from "../../config/supabaseClient";
+import { isMissingColumnError } from "../../utils/supabaseHelpers";
 import ConfirmDialog from "../../components/admin/ConfirmDialog";
 import {
   EXPERIENCE_ICON_OPTIONS,
@@ -45,6 +46,31 @@ const AdminExperiences = () => {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const [devamEdiyor, setDevamEdiyor] = useState(false);
+  const [ikonColumnMissing, setIkonColumnMissing] = useState(false);
+
+  const buildPayload = (includeIcon = true) => {
+    const payload = {
+      sirket_adi: (form.sirket_adi ?? "").trim(),
+      pozisyon: (form.pozisyon ?? "").trim(),
+      baslangic_tarihi: form.baslangic_tarihi || null,
+      bitis_tarihi: devamEdiyor ? null : form.bitis_tarihi || null,
+      aciklama: (form.aciklama ?? "").trim() || null,
+    };
+
+    if (includeIcon) {
+      payload.ikon =
+        form.ikon || guessExperienceIcon(form.pozisyon, form.sirket_adi);
+    }
+
+    return payload;
+  };
+
+  const saveExperience = async (payload) => {
+    if (editingId) {
+      return supabase.from("experiences").update(payload).eq("id", editingId);
+    }
+    return supabase.from("experiences").insert([payload]);
+  };
 
   const fetchExperiences = async () => {
     setLoading(true);
@@ -110,31 +136,41 @@ const AdminExperiences = () => {
     );
 
     try {
-      const payload = {
-        sirket_adi: (form.sirket_adi ?? "").trim(),
-        pozisyon: (form.pozisyon ?? "").trim(),
-        baslangic_tarihi: form.baslangic_tarihi || null,
-        bitis_tarihi: devamEdiyor ? null : form.bitis_tarihi || null,
-        aciklama: (form.aciklama ?? "").trim() || null,
-        ikon: form.ikon || guessExperienceIcon(form.pozisyon, form.sirket_adi),
-      };
+      let { error } = await saveExperience(buildPayload(true));
 
-      if (editingId) {
-        const { error } = await supabase
-          .from("experiences")
-          .update(payload)
-          .eq("id", editingId);
-        if (error) throw error;
-        toast.success("Deneyim güncellendi.", { id: toastId });
-      } else {
-        const { error } = await supabase.from("experiences").insert([payload]);
-        if (error) throw error;
-        toast.success("Deneyim eklendi.", { id: toastId });
+      if (error && isMissingColumnError(error, "ikon")) {
+        setIkonColumnMissing(true);
+        ({ error } = await saveExperience(buildPayload(false)));
+
+        if (!error) {
+          toast.success(
+            editingId ? "Deneyim güncellendi." : "Deneyim eklendi.",
+            { id: toastId }
+          );
+          toast(
+            "İkon kaydı için supabase/experiences_icons.sql dosyasını Supabase SQL Editor'de çalıştırın.",
+            { icon: "⚠️", duration: 6000 }
+          );
+          resetForm();
+          fetchExperiences();
+          return;
+        }
       }
+
+      if (error) throw error;
+
+      setIkonColumnMissing(false);
+      toast.success(
+        editingId ? "Deneyim güncellendi." : "Deneyim eklendi.",
+        { id: toastId }
+      );
 
       resetForm();
       fetchExperiences();
     } catch (err) {
+      if (isMissingColumnError(err, "ikon")) {
+        setIkonColumnMissing(true);
+      }
       toast.error(err.message || "İşlem başarısız.", { id: toastId });
     } finally {
       setSaving(false);
@@ -182,6 +218,23 @@ const AdminExperiences = () => {
           </button>
         )}
       </div>
+
+      {ikonColumnMissing && (
+        <div className={`${adminCardClass} border-amber-500/40 bg-amber-500/10 space-y-3`}>
+          <h3 className="text-lg font-bold text-amber-200">İkon sütunu henüz eklenmemiş</h3>
+          <p className="text-sm text-[#dfd9ff]/80 leading-relaxed">
+            Supabase&apos;de <code className="text-amber-200">experiences.ikon</code> sütunu yok.
+            Proje klasöründeki <strong className="text-white">supabase/experiences_icons.sql</strong> dosyasını
+            Supabase Dashboard → SQL Editor&apos;de çalıştırın, ardından sayfayı yenileyin.
+          </p>
+          <pre className="text-xs text-[#dfd9ff]/70 bg-black/30 p-3 rounded-lg overflow-x-auto">
+{`ALTER TABLE public.experiences
+  ADD COLUMN IF NOT EXISTS ikon TEXT DEFAULT 'work';
+
+NOTIFY pgrst, 'reload schema';`}
+          </pre>
+        </div>
+      )}
 
       {showForm && (
         <form
