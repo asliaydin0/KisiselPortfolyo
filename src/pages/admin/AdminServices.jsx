@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { FiEdit2, FiTrash2, FiPlus } from "react-icons/fi";
 import { supabase } from "../../config/supabaseClient";
+import { isMissingTableError } from "../../utils/supabaseHelpers";
 import ConfirmDialog from "../../components/admin/ConfirmDialog";
 import {
   SERVICE_ICON_OPTIONS,
@@ -32,16 +33,23 @@ const AdminServices = () => {
   const [form, setForm] = useState(emptyForm);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [tableMissing, setTableMissing] = useState(false);
 
   const fetchServices = async () => {
     setLoading(true);
+    setTableMissing(false);
     const { data, error } = await supabase
       .from("services")
       .select("*")
       .order("sira", { ascending: true });
 
     if (error) {
-      toast.error("Hizmetler yüklenemedi: " + error.message);
+      if (isMissingTableError(error)) {
+        setTableMissing(true);
+        setItems([]);
+      } else {
+        toast.error("Hizmetler yüklenemedi: " + error.message);
+      }
     } else {
       setItems(data || []);
     }
@@ -166,6 +174,22 @@ const AdminServices = () => {
           </button>
         )}
       </div>
+
+      {tableMissing && (
+        <div className={`${adminCardClass} border-amber-500/40 bg-amber-500/10 space-y-3`}>
+          <h3 className="text-lg font-bold text-amber-200">Hizmetler tablosu henüz oluşturulmamış</h3>
+          <p className="text-sm text-[#dfd9ff]/80 leading-relaxed">
+            Supabase projenizde <code className="text-amber-200">services</code> tablosu yok.
+            Proje klasöründeki <strong className="text-white">supabase/services.sql</strong> dosyasını
+            Supabase Dashboard → SQL Editor&apos;de çalıştırın, ardından sayfayı yenileyin.
+          </p>
+          <ol className="text-sm text-[#dfd9ff]/70 list-decimal list-inside space-y-1">
+            <li>supabase.com → projeniz → SQL Editor</li>
+            <li>services.sql içeriğini yapıştırıp Run</li>
+            <li>Bu sayfayı yenileyin</li>
+          </ol>
+        </div>
+      )}
 
       {showForm && (
         <form

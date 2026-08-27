@@ -1,7 +1,16 @@
 -- ============================================================
 -- Hizmetler tablosu
 -- Supabase Dashboard > SQL Editor'de çalıştırın.
+-- Not: handle_updated_at fonksiyonu schema.sql'de yoksa aşağıda oluşturulur.
 -- ============================================================
+
+CREATE OR REPLACE FUNCTION public.handle_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TABLE IF NOT EXISTS public.services (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),

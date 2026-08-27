@@ -25,15 +25,26 @@ export const formatSupabaseError = (err) => {
   if (
     message.includes("relation") ||
     message.includes("does not exist") ||
+    message.includes("schema cache") ||
     message.includes("PGRST")
   ) {
     return (
       "Veritabanı tablosu bulunamadı. " +
-      "supabase/schema.sql dosyasını Supabase SQL Editor'de çalıştırdığınızdan emin olun."
+      "supabase/services.sql dosyasını Supabase Dashboard > SQL Editor'de çalıştırın."
     );
   }
 
   return message;
+};
+
+export const isMissingTableError = (err) => {
+  const message = err?.message || String(err || "");
+  return (
+    message.includes("schema cache") ||
+    message.includes("does not exist") ||
+    message.includes("relation") ||
+    (message.includes("PGRST") && message.toLowerCase().includes("table"))
+  );
 };
 
 export const assertSupabaseClient = () => {

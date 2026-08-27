@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import ServiceCard from "./ServiceCard";
 import { SectionWrapper } from "../hoc";
 import { styles } from "../styles";
-import { formatSupabaseError, assertSupabaseClient } from "../utils/supabaseHelpers";
+import { formatSupabaseError, assertSupabaseClient, isMissingTableError } from "../utils/supabaseHelpers";
 import { offeredServices as fallbackServices } from "../constants";
 import { fadeIn, textVariant } from "../utils/motion";
 import SectionLoader from "./SectionLoader";
@@ -42,8 +42,10 @@ const Services = () => {
       );
     } catch (err) {
       console.error("Hizmetler yüklenirken hata:", err);
-      setError(formatSupabaseError(err));
       setServices(fallbackServices.map(mapServiceRow));
+      if (!isMissingTableError(err)) {
+        setError(formatSupabaseError(err));
+      }
     } finally {
       setLoading(false);
     }
