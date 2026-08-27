@@ -1,10 +1,9 @@
-import { Suspense } from "react";
+import { Suspense, lazy } from "react";
 import { motion } from "framer-motion";
 import { styles } from "../styles";
-import { ComputersCanvas } from "./canvas";
+import ComputersCanvas from "./canvas/Computers";
 import { useSiteSettings, renderHeroTitle } from "../context/SiteSettingsContext";
 import ErrorBoundary from "./ErrorBoundary";
-import SceneLoader from "./SceneLoader";
 
 const Hero = () => {
   const { settings } = useSiteSettings();
@@ -75,9 +74,7 @@ const Hero = () => {
 
       <div className="absolute inset-0 z-0">
         <ErrorBoundary message="3D bilgisayar modeli yüklenemedi.">
-          <Suspense fallback={<SceneLoader label="3D model yükleniyor..." />}>
-            <ComputersCanvas />
-          </Suspense>
+          <ComputersCanvas />
         </ErrorBoundary>
       </div>
     </section>

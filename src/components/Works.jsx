@@ -6,7 +6,6 @@ import { styles } from "../styles";
 import { github } from "../assets";
 import { SectionWrapper } from "../hoc";
 import { fadeIn, textVariant } from "../utils/motion";
-import { supabase } from "../config/supabaseClient";
 import { formatSupabaseError, assertSupabaseClient } from "../utils/supabaseHelpers";
 import SectionLoader from "./SectionLoader";
 import DataFetchError from "./DataFetchError";

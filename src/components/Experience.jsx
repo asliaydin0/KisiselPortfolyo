@@ -11,7 +11,6 @@ import { styles } from "../styles";
 import { starbucks, tesla, shopify, meta } from "../assets";
 import { SectionWrapper } from "../hoc";
 import { textVariant } from "../utils/motion";
-import { supabase } from "../config/supabaseClient";
 import { formatSupabaseError, assertSupabaseClient } from "../utils/supabaseHelpers";
 import SectionLoader from "./SectionLoader";
 import DataFetchError from "./DataFetchError";
