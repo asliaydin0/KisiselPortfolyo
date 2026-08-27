@@ -99,16 +99,28 @@ const ExperienceCard = ({ experience }) => {
       </div>
 
       {experience.points.length > 0 && (
-        <ul className="mt-5 list-disc ml-5 space-y-2">
-          {experience.points.map((point, index) => (
-            <li
-              key={`experience-point-${experience.id}-${index}`}
-              className="text-white-100 text-[14px] pl-1 tracking-wider"
-            >
-              {point}
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="sm:hidden mt-3 list-none space-y-1.5">
+            {experience.points.slice(0, 2).map((point, index) => (
+              <li
+                key={`experience-point-m-${experience.id}-${index}`}
+                className="text-white-100 text-[13px] leading-relaxed pl-3 border-l border-[#915EFF]/40"
+              >
+                {point}
+              </li>
+            ))}
+          </ul>
+          <ul className="hidden sm:block mt-5 list-disc ml-5 space-y-2">
+            {experience.points.map((point, index) => (
+              <li
+                key={`experience-point-${experience.id}-${index}`}
+                className="text-white-100 text-[14px] pl-1 tracking-wider"
+              >
+                {point}
+              </li>
+            ))}
+          </ul>
+        </>
       )}
     </VerticalTimelineElement>
   );
@@ -165,7 +177,7 @@ const Experience = () => {
             <DataFetchError message={error} onRetry={fetchExperiences} />
           )}
           {experiences.length > 0 ? (
-            <div className={`${error ? "mt-8" : "mt-20"} flex flex-col`}>
+            <div className={`${error ? "mt-8" : "mt-12 sm:mt-20"} flex flex-col`}>
               <VerticalTimeline>
                 {experiences.map((experience) => (
                   <ExperienceCard

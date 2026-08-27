@@ -93,15 +93,18 @@ const Services = () => {
 
       <motion.p
         variants={fadeIn("", "", 0.1, 1)}
-        className="relative mt-4 text-secondary text-[17px] max-w-3xl mx-auto text-center leading-[30px]"
+        className="relative mt-4 text-secondary text-[14px] sm:text-[17px] max-w-3xl mx-auto sm:mx-0 text-center sm:text-left leading-relaxed sm:leading-[30px]"
       >
-        Markanızı dijitale taşıyan, görsel olarak güçlü ve kullanıcı odaklı çözümler
-        sunuyorum. Her projeye özel tasarım ve geliştirme ile fark yaratıyorum.
+        <span className="sm:hidden">Markanıza özel dijital çözümler.</span>
+        <span className="hidden sm:inline">
+          Markanızı dijitale taşıyan, görsel olarak güçlü ve kullanıcı odaklı çözümler sunuyorum.
+          Her projeye özel tasarım ve geliştirme ile fark yaratıyorum.
+        </span>
       </motion.p>
 
       <motion.div
         variants={fadeIn("up", "spring", 0.15, 0.7)}
-        className="relative mt-8 grid grid-cols-3 gap-3 sm:gap-6 max-w-xl mx-auto"
+        className="hidden sm:grid relative mt-8 grid-cols-3 gap-3 sm:gap-6 max-w-xl mx-auto sm:mx-0"
       >
         {HIGHLIGHT_STATS.map((stat) => (
           <div
@@ -117,7 +120,7 @@ const Services = () => {
       {!loading && serviceTags.length > 0 && (
         <motion.div
           variants={fadeIn("", "", 0.2, 0.8)}
-          className="relative mt-8 overflow-hidden"
+          className="hidden sm:block relative mt-8 overflow-hidden"
         >
           <div className="flex gap-3 animate-[scroll_30s_linear_infinite] w-max">
             {[...serviceTags, ...serviceTags].map((tag, i) => (
@@ -144,7 +147,7 @@ const Services = () => {
             </div>
           ) : (
             <div
-              className={`relative mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 ${
+              className={`relative mt-8 sm:mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 ${
                 error ? "opacity-90" : ""
               }`}
             >

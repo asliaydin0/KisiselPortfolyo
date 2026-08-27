@@ -7,10 +7,10 @@ const TechSkillCard = memo(({ icon, name, index = 0 }) => (
   <motion.div
     variants={fadeIn("up", "spring", index * 0.025, 0.45)}
     title={name}
-    className="group flex flex-col items-center gap-2 w-[76px] sm:w-[84px]"
+    className="group flex flex-col items-center gap-2 w-[72px] sm:w-[84px]"
   >
-    <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center transition-all duration-300 group-hover:border-[#915EFF]/50 group-hover:bg-[#915EFF]/10 group-hover:-translate-y-1 group-hover:shadow-[0_12px_24px_rgba(145,94,255,0.18)]">
-      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-[#915EFF]/20 to-transparent pointer-events-none" />
+    <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center transition-all duration-300 sm:group-hover:border-[#915EFF]/50 sm:group-hover:bg-[#915EFF]/10 sm:group-hover:-translate-y-1 sm:group-hover:shadow-[0_12px_24px_rgba(145,94,255,0.18)]">
+      <div className="absolute inset-0 rounded-xl sm:rounded-2xl opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-[#915EFF]/20 to-transparent pointer-events-none" />
       <img
         src={icon}
         alt={name || "Yetenek"}
